@@ -1,12 +1,75 @@
-<h1>Client {{clients ? clients[0].name : "Anonimous"}}</h1>
+<h1>Boa noite, {{clients ? clients[0].name : "Ricardo"}}</h1>
 
-<!-- @if(clientName) {
-  <h2>Client name: {{clientName}}</h2>
-} @else {
-  <h2>Client not found</h2>
-} -->
+<div class="novo-pedido-header">
+   <h1>Novo pedido</h1>
+   <div class="novo-pedido-divider"></div>
+</div>
+
+<div class="cliente-form-container">
+   <div class="cliente-form-row">
+      <div class="cliente-form-col">
+         <span>Tipo de serviço</span>
+         <select>
+            <option value="undefined"></option>
+            <option value="instalacao_ar">Instalação Ar-Condicionado</option>
+            <option value="remocao_ar">Remoção Ar-Condicionado</option>
+         </select>
+         <span>Descrição</span>
+         <input type="text">
+      </div>
+      <div class="cliente-form-col">
+         <span>Data</span>
+         <input type="date">
+         <span>Endereço</span>
+         <select>
+            <option value="undefined"></option>
+            <option value="rua exemplo 1">Senac - Coronel Genuíno, 130</option>
+            <option value="rua exemplo 2">Casa - Rua Exemplo 2, 456</option>
+         </select>
+      </div>
+   </div>
+   <button class="cliente-form-btn" (click)='novoPedido($event)'>Novo pedido</button>
+</div>
+
+<div class="pedidos-section">
+   <div class="pedidos-header">
+      <h2>Seus pedidos</h2>
+      <div class="pedidos-divider"></div>
+   </div>
+   <div class="pedidos-table-wrapper">
+      <table class="pedidos-table">
+         <thead>
+            <tr>
+               <th>Atendente</th>
+               <th>Tipo de serviço</th>
+               <th>Descrição</th>
+               <th>Endereço</th>
+               <th>Data início</th>
+               <th>Data finalizado</th>
+               <th>Status</th>
+               <th>Valor</th>
+            </tr>
+         </thead>
+         <tbody>
+            <!-- Exemplo de iteração, ajuste conforme seu array de pedidos -->
+            @for (pedido of pedidos; track pedido) {
+            <tr>
+               <td>{{ pedido.atendente }}</td>
+               <td>{{ pedido.tipoServico }}</td>
+               <td>{{ pedido.descricao }}</td>
+               <td>{{ pedido.endereco }}</td>
+               <td>{{ pedido.dataInicio }}</td>
+               <td>{{ pedido.dataFinalizado }}</td>
+               <td>{{ pedido.status }}</td>
+               <td>{{ pedido.valor }}</td> <!-- Fazer pipe de dinheiro -->
+            </tr>
+            }
+         </tbody>
+      </table>
+   </div>
+</div>
+
+<!-- Lista de clientes -->
 @for (client of clients; track client) {
-   <h2>Client name: {{ client.name }}</h2>
+<h2>Client name: {{ client.name }}</h2>
 }
-
-<button (click)="queryClient($event)">Query client</button>
