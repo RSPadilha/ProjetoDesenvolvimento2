@@ -1,0 +1,12 @@
+<h1>Client {{clients ? clients[0].name : "Anonimous"}}</h1>
+
+<!-- @if(clientName) {
+  <h2>Client name: {{clientName}}</h2>
+} @else {
+  <h2>Client not found</h2>
+} -->
+@for (client of clients; track client) {
+   <h2>Client name: {{ client.name }}</h2>
+}
+
+<button (click)="queryClient($event)">Query client</button>

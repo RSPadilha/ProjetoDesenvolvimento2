@@ -1,0 +1,112 @@
+{
+    "client":[
+        {
+            "id": "1",
+            "name": "Igor",
+            "telephone": "123456789",
+            "address": {
+                "cep": "12345678",
+                "street": "Rua A",
+                "number": 123,
+                "complement": "Apto 1",
+                "neighborhood": "Centro",
+                "city": "Rio de Janeiro",
+                "state": "RJ"
+            },
+            "email": "igor@gmail.com",
+            "password": "123456"
+        },
+        {
+            "id": "2",
+            "name": "Ricardo",
+            "telephone": "987654321",
+            "address": {
+                "cep": "87654321",
+                "street": "Rua B",
+                "number": 456,
+                "complement": "Casa 2",
+                "neighborhood": "Jardim",
+                "city": "Rio Grande do Sul",
+                "state": "RS"
+            },
+            "email": "ricardo@gmail.com",
+            "password": "123456"
+        }
+    ],
+    "attendant": [
+        {
+            "id": "1",
+            "name": "Zanuz",
+            "status": "available",
+            "email": "zanuz@senacrs.com",
+            "telephone": "123456789",
+            "password": "123456"
+        },
+        {
+            "id": "2",
+            "name": "Ries",
+            "status": "busy",
+            "email": "ries@senacrs.com",
+            "telephone": "987654321",
+            "password": "123456"
+        }
+    ],
+    "orders": [
+        {
+            "id": 1,
+            "idClient": 1,
+            "idAttendant": 1,
+            "description": "Retirar ar condicionado",
+            "adress": {
+                "cep": "12345678",
+                "street": "Rua A",
+                "number": 123,
+                "complement": "Apto 1",
+                "neighborhood": "Centro",
+                "city": "Rio de Janeiro",
+                "state": "RJ"
+            },
+            "value": 300,
+            "status": "pending",
+            "start-date": "2023-10-01",
+            "end-date": "2023-10-02",
+            "idService": 2
+        },
+        {
+            "id": 2,
+            "idClient": 2,
+            "idAttendant": 2,
+            "description": "Instalar ar condicionado",
+            "adress": {
+                "cep": "12345678",
+                "street": "Rua A",
+                "number": 123,
+                "complement": "Apto 1",
+                "neighborhood": "Centro",
+                "city": "Rio de Janeiro",
+                "state": "RJ"
+            },
+            "value": 400,
+            "status": "completed",
+            "start-date": "2023-10-01",
+            "end-date": "2023-10-02",
+            "idService": 1
+        }
+    ],
+    "services": [
+        {
+            "id": 1,
+            "category": "Instalação de ar condicionado",
+            "description": "Instalação de ar condicionado split",
+            "value": 400,
+            "available": true
+        },
+        {
+            "id": 2,
+            "category": "Retirada de ar condicionado",
+            "description": "Retirada de ar condicionado split",
+            "value": 300,
+            "available": true
+        }
+    ]
+}
