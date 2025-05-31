@@ -91,6 +91,46 @@
             "start-date": "2023-10-01",
             "end-date": "2023-10-02",
             "idService": 1
+        },
+        {
+            "id": 3,
+            "idClient": 1,
+            "idAttendant": 2,
+            "description": "Instalar ar condicionado",
+            "adress": {
+                "cep": "87654321",
+                "street": "Rua B",
+                "number": 456,
+                "complement": "Casa 2",
+                "neighborhood": "Jardim",
+                "city": "Rio Grande do Sul",
+                "state": "RS"
+            },
+            "value": 400,
+            "status": "pending",
+            "start-date": "2023-10-03",
+            "end-date": "2025-10-02",
+            "idService": 1
+        },
+        {
+            "id": 4,
+            "idClient": 2,
+            "idAttendant": 1,
+            "description": "Retirar ar condicionado",
+            "adress": {
+                "cep": "87654321",
+                "street": "Rua B",
+                "number": 456,
+                "complement": "Casa 2",
+                "neighborhood": "Jardim",
+                "city": "Rio Grande do Sul",
+                "state": "RS"
+            },
+            "value": 300,
+            "status": "completed",
+            "start-date": "2025-10-03",
+            "end-date": "2025-05-30",
+            "idService": 2
         }
     ],
     "services": [

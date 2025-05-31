@@ -1,1 +1,36 @@
-<p>pedidos works!</p>
+<div class="pedidos-section">
+   <div class="pedidos-header">
+      <h2> Todos os pedidos </h2>
+   <div class="pedidos-divider"></div>
+   </div>
+   <div class="pedidos-table-wrapper">
+      <table class="pedidos-table">
+         <thead>
+            <tr>
+               <th>Atendente</th>
+               <th>Tipo de serviço</th>
+               <th>Descrição</th>
+               <th>Endereço</th>
+               <th>Data início</th>
+               <th>Data finalizado</th>
+               <th>Status</th>
+               <th>Valor</th>
+            </tr>
+         </thead>
+         <tbody>
+            @for (pedido of pedidos; track pedido) {
+            <tr>
+               <td>{{ pedido.atendente }}</td>
+               <td>{{ pedido.tipoServico }}</td>
+               <td>{{ pedido.descricao }}</td>
+               <td>{{ pedido.endereco }}</td>
+               <td>{{ pedido.dataInicio }}</td>
+               <td>{{ pedido.dataFinalizado }}</td>
+               <td>{{ pedido.status }}</td>
+               <td>{{ pedido.valor }}</td> <!-- Fazer pipe de dinheiro -->
+            </tr>
+            }
+         </tbody>
+      </table>
+   </div>
+</div>

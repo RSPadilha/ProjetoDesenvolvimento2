@@ -1,0 +1,79 @@
+
+.novo-pedido-header {
+   display: flex;
+   flex-direction: column;
+   align-items: center;
+   margin-bottom: 2rem;
+}
+
+.novo-pedido-header h1 {
+   margin-bottom: 0.3rem;
+   font-size: 2rem;
+   font-weight: 600;
+}
+
+.novo-pedido-divider {
+   width: 120px;
+   height: 2px;
+   background: #23272f;
+   border-radius: 2px;
+   margin-bottom: 0.5rem;
+}
+
+.pedidos-section {
+   margin-top: 3rem;
+   max-width: 1400px;  /* Fazer o min pra deixar responsivo */
+   margin-left: auto;
+   margin-right: auto;
+}
+
+.pedidos-header {
+   display: flex;
+   flex-direction: column;
+   align-items: center;
+   margin-bottom: 1rem;
+}
+
+.pedidos-header h2 {
+   margin-bottom: 0.2rem;
+   font-size: 1.5rem;
+   font-weight: 600;
+}
+
+.pedidos-divider {
+   width: 100px;
+   height: 2px;
+   background: #23272f;
+   border-radius: 2px;
+   margin-bottom: 0.5rem;
+}
+
+.pedidos-table-wrapper {
+   overflow-x: auto;
+}
+
+.pedidos-table {
+   width: 100%;
+   border-collapse: collapse;
+   background: #fff;
+   border-radius: 6px;
+   overflow: hidden;
+   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+.pedidos-table th,
+.pedidos-table td {
+   padding: 0.7rem 1rem;
+   text-align: left;
+   border-bottom: 1px solid #e0e0e0;
+   font-size: 1rem;
+}
+
+.pedidos-table th {
+   background: #f3f3f3;
+   font-weight: 600;
+}
+
+.pedidos-table tr:last-child td {
+   border-bottom: none;
+}
