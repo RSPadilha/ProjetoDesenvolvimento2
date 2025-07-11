@@ -1,0 +1,98 @@
+/* Mensagem de erro dos campos obrigatórios */
+.erro-campo {
+   color: #d32f2f;
+   font-size: 0.95em;
+   margin-bottom: 4px;
+}
+
+/* Título da lista */
+.clientes-title {
+   text-align: center;
+   margin-bottom: 24px;
+}
+
+/* Mensagem de lista vazia */
+.clientes-empty {
+   text-align: center;
+}
+
+/* Lista de cards */
+.clientes-list {
+   display: flex;
+   flex-wrap: wrap;
+   gap: 24px;
+   justify-content: center;
+}
+
+/* Card individual */
+.cliente-card {
+   border: 1px solid #ccc;
+   border-radius: 8px;
+   padding: 20px;
+   width: 350px;
+   background: #f9f9f9;
+   box-shadow: 0 2px 8px #0001;
+}
+
+/* Lista de endereço */
+.cliente-endereco-list {
+   margin-left: 10px;
+}
+
+/* Ações dos cards */
+.cliente-actions {
+   display: flex;
+   gap: 10px;
+   margin-top: 10px;
+}
+
+/* Botões */
+.btn-editar {
+   background: #1976d2;
+   color: #fff;
+   border: none;
+   padding: 6px 14px;
+   border-radius: 4px;
+   cursor: pointer;
+}
+
+.btn-deletar {
+   background: #d32f2f;
+   color: #fff;
+   border: none;
+   padding: 6px 14px;
+   border-radius: 4px;
+   cursor: pointer;
+}
+
+.btn-salvar {
+   background: #388e3c;
+   color: #fff;
+   border: none;
+   padding: 6px 14px;
+   border-radius: 4px;
+   cursor: pointer;
+}
+
+.btn-cancelar {
+   background: #757575;
+   color: #fff;
+   border: none;
+   padding: 6px 14px;
+   border-radius: 4px;
+   cursor: pointer;
+}
+
+/* Inputs */
+.input-full {
+   width: 100%;
+   margin-bottom: 6px;
+}
+
+/* Fieldset de endereço */
+.fieldset-endereco {
+   border: 1px solid #ccc;
+   border-radius: 4px;
+   padding: 8px;
+   margin-bottom: 8px;
+}

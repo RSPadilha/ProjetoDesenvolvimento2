@@ -11,29 +11,28 @@ export class PedidosComponent {
 
   async buscarTodosPedidos() {
     try {
-      const response = await fetch(`http://localhost:3000/orders`);
-      const orders = await response.json();
+      const res = await fetch(`http://localhost:3000/pedidos`);
+      const pedidos = await res.json();
       // Busca atendentes e serviços para mapear nomes
-      const [attendantsRes, servicesRes] = await Promise.all([
-        fetch('http://localhost:3000/attendant'),
-        fetch('http://localhost:3000/services')
+      const [attendantsRes] = await Promise.all([
+        fetch('http://localhost:3000/atendentes')
+        // fetch('http://localhost:3000/servicos')
       ]);
       const attendants = await attendantsRes.json();
-      const services = await servicesRes.json();
+      // const services = await servicesRes.json();
 
-      this.pedidos = orders.map((order: any) => {
-        const atendente = attendants.find((a: any) => a.id == order.idAttendant)?.name || '-';
-        const tipoServico = services.find((s: any) => s.id == order.idService)?.category || '-';
-        const endereco = order.adress ? `${order.adress.street}, ${order.adress.number}` : '-';
+      this.pedidos = pedidos.map((pedido: any) => {
         return {
-          atendente,
-          tipoServico,
-          descricao: order.description,
-          endereco,
-          dataInicio: order['start-date'],
-          dataFinalizado: order['end-date'],
-          status: order.status,
-          valor: order.value
+          id: pedido.id,
+          idCliente: pedido.cliente.id,
+          cliente: pedido.cliente.nome || '-',
+          atendente: pedido.atendente?.nome || '-',
+          descricao: pedido.descricao || '-',
+          endereco: pedido.cliente.endereco.rua || '-',
+          dataInicio: pedido.data ? new Date(pedido.data).toLocaleDateString() : '-',
+          dataFinalizado: pedido.dataFinalizado ? new Date(pedido.dataFinalizado).toLocaleDateString() : '-',
+          status: pedido.status || '-',
+          valor: pedido.valor || '-'
         };
       });
     } catch (e) {

@@ -7,6 +7,9 @@
       <table class="pedidos-table">
          <thead>
             <tr>
+               <th>ID pedido</th>
+               <th>ID cliente</th>
+               <th>Cliente</th>
                <th>Atendente</th>
                <th>Tipo de serviço</th>
                <th>Descrição</th>
@@ -20,6 +23,9 @@
          <tbody>
             @for (pedido of pedidos; track pedido) {
             <tr>
+               <td>{{ pedido.id }}</td>
+               <td>{{ pedido.idCliente }}</td>
+               <td>{{ pedido.cliente }}</td>
                <td>{{ pedido.atendente }}</td>
                <td>{{ pedido.tipoServico }}</td>
                <td>{{ pedido.descricao }}</td>

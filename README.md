@@ -74,6 +74,15 @@ _Relatório será gerado ao final do projeto_
 
 _Relatório será gerado ao final do projeto_
 
+## Melhorias a Implementar
+
+- [ ] Atualizar a stack tecnologica
+- [ ] Integrar autenticação JWT
+- [ ] Realizar testes unitários e de integração
+- [x] Supabase online
+- [ ] Front end no vercel
+- [ ] 
+
 ## Referências Bibliográficas
 
 ZANUZ, Luciano. Modelo de documentação, 2025 <https://github.com/lucianozanuz/projeto-desenvolvimento-ii/blob/main/modelo_de_documentacao.md>
