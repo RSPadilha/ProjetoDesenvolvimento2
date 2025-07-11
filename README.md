@@ -1,8 +1,12 @@
 # Projeto de Desenvolvimento 2
 
+> 💻 Site disponível em: [https://projetodesenvolvimento2front.vercel.app/](https://projetodesenvolvimento2front.vercel.app/)
+
 Por: Ricardo Padilha
 
 Este artigo tem como objetivo ilustrar um sistema web de gerenciamento centralizado de ordens de pedido para empresas prestadoras de serviço. Este será um projeto final do curso de Análise e Desenvolvimento de Sistemas do Unisenac-RS.
+
+
 
 ## Resumo do Projeto
 
@@ -80,7 +84,7 @@ _Relatório será gerado ao final do projeto_
 - [ ] Integrar autenticação JWT
 - [ ] Realizar testes unitários e de integração
 - [x] Supabase online
-- [ ] Front end no vercel
+- [x] Frontend no vercel
 - [ ] 
 
 ## Referências Bibliográficas
