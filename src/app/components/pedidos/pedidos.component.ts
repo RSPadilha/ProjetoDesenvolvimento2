@@ -11,11 +11,11 @@ export class PedidosComponent {
 
   async buscarTodosPedidos() {
     try {
-      const res = await fetch(`http://localhost:3000/pedidos`);
+      const res = await fetch(`http://pfs-api.onrender.com/pedidos`);
       const pedidos = await res.json();
       // Busca atendentes e serviços para mapear nomes
       const [attendantsRes] = await Promise.all([
-        fetch('http://localhost:3000/atendentes')
+        fetch('http://pfs-api.onrender.com/atendentes')
         // fetch('http://localhost:3000/servicos')
       ]);
       const attendants = await attendantsRes.json();

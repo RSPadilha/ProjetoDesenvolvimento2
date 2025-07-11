@@ -23,13 +23,13 @@ export class AtendenteComponent implements OnInit {
   }
 
   buscarClientes() {
-    this.http.get<any[]>('http://localhost:3000/clientes/').subscribe(data => {
+    this.http.get<any[]>('http://pfs-api.onrender.com/clientes/').subscribe(data => {
       this.clientes = data;
     });
   }
 
   deletarCliente(id: number) {
-    this.http.delete(`http://localhost:3000/clientes/${id}`).subscribe(() => {
+    this.http.delete(`http://pfs-api.onrender.com/clientes/${id}`).subscribe(() => {
       this.clientes = this.clientes.filter(c => c.id !== id);
     });
   }
@@ -70,7 +70,7 @@ export class AtendenteComponent implements OnInit {
   salvarEdicao() {
     // Mantém para edição de cliente existente
     if (!this.criandoNovo) {
-      this.http.put(`http://localhost:3000/clientes/${this.editandoId}`, this.clienteEdit).subscribe(() => {
+      this.http.put(`http://pfs-api.onrender.com/clientes/${this.editandoId}`, this.clienteEdit).subscribe(() => {
         this.buscarClientes();
         this.cancelarEdicao();
       });
@@ -79,7 +79,7 @@ export class AtendenteComponent implements OnInit {
 
   salvarNovoCliente(form: any) {
     if (form.valid) {
-      this.http.post('http://localhost:3000/clientes/', this.clienteEdit).subscribe(() => {
+      this.http.post('http://pfs-api.onrender.com/clientes/', this.clienteEdit).subscribe(() => {
         this.buscarClientes();
         this.cancelarEdicao();
       });
