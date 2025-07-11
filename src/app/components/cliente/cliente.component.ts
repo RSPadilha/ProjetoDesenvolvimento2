@@ -11,7 +11,7 @@ export class ClienteComponent {
   pedidos: any[] = [];
 
   queryClient(event: any) {
-    fetch('http://pfs-api.onrender.com/client')
+    fetch('https://pfs-api.onrender.com/client')
       .then(res => res.json())
       .then(res => this.clients = res) // Transformar no modo angular mas tbm mover para o service com auth
   }
@@ -21,12 +21,12 @@ export class ClienteComponent {
 
   async buscarPedidos(userId: number) {
     try {
-      const response = await fetch(`http://pfs-api.onrender.com/orders?idClient=${userId}`);
+      const response = await fetch(`https://pfs-api.onrender.com/orders?idClient=${userId}`);
       const orders = await response.json();
       // Busca atendentes e serviços para mapear nomes
       const [attendantsRes, servicesRes] = await Promise.all([
-        fetch('http://pfs-api.onrender.com/attendant'),
-        fetch('http://pfs-api.onrender.com/services')
+        fetch('https://pfs-api.onrender.com/attendant'),
+        fetch('https://pfs-api.onrender.com/services')
       ]);
       const attendants = await attendantsRes.json();
       const services = await servicesRes.json();
