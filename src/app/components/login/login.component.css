@@ -1,0 +1,78 @@
+* {
+   box-sizing: border-box;
+}
+
+.login-screen {
+   margin: 0;
+   font-family: "Open Sans", sans-serif;
+   background-color: #f1f5f9;
+   display: flex;
+   justify-content: center;
+   align-items: center;
+   height: 100vh;
+}
+
+.login-container {
+   background-color: white;
+   padding: 40px;
+   border-radius: 6px;
+   box-shadow: 0 0 20px rgba(0, 0, 0, 0.05);
+   width: 350px;
+   text-align: center;
+}
+
+h2 {
+   margin: 10px 0 20px;
+}
+
+input[type="email"],
+input[type="password"] {
+   width: 100%;
+   padding: 10px;
+   margin: 8px 0;
+   border: 1px solid #ccc;
+   border-radius: 4px;
+}
+
+.form-footer {
+   display: flex;
+   justify-content: space-between;
+   align-items: center;
+   margin: 10px 0;
+   font-size: 14px;
+}
+
+.form-footer a {
+   text-decoration: none;
+   color: #1e90ff;
+}
+
+.login-btn {
+   background-color: #04a9f5;
+   color: white;
+   border: none;
+   padding: 10px 20px;
+   border-radius: 4px;
+   cursor: pointer;
+   margin-top: 10px;
+   width: 100%;
+}
+
+.login-btn:hover {
+   background-color: #1c86ee;
+}
+
+.bottom-text {
+   margin-top: 20px;
+   font-size: 14px;
+}
+
+.bottom-text a {
+   text-decoration: none;
+   color: #1e90ff;
+   margin-left: 5px;
+}
+
+input[type="checkbox"] {
+   margin-right: 5px;
+}

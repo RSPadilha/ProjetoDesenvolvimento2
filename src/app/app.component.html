@@ -1,5 +1,4 @@
-@if(loginStatus) {
-   <app-home />
-} @else {
-  <app-login></app-login>
+@if(isLoggedIn) {
+<app-header></app-header>
 }
+<router-outlet />

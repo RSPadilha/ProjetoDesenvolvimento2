@@ -47,6 +47,22 @@
               ],
               "outputHashing": "all"
             },
+            "nestjs": {
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.prod.ts",
+                  "with": "src/environments/environment.nestjs.ts"
+                }
+              ]
+            },
+            "csharp": {
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.prod.ts",
+                  "with": "src/environments/environment.csharp.ts"
+                }
+              ]
+            },
             "development": {
               "optimization": false,
               "extractLicenses": false,
@@ -59,6 +75,12 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
+              "buildTarget": "ProjetoDesenvolvimento2:build:production"
+            },
+            "nestjs": {
+              "buildTarget": "ProjetoDesenvolvimento2:build:production"
+            },
+            "csharp": {
               "buildTarget": "ProjetoDesenvolvimento2:build:production"
             },
             "development": {

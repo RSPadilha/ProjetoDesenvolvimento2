@@ -4,11 +4,12 @@
    <h1 class="header-title" routerLink="">ProjetoDesenvolvimento2</h1>
    <nav class="header-nav">
       <ul>
-         <li><a routerLink="/">Home</a></li>
-         <li><a routerLink="/cliente">Cliente</a></li>
-         <li><a routerLink="/atendente">Atendente</a></li>
+         <li><a routerLink="/cliente">Solicite orçamento</a></li> <!-- Apenas para o cliente -->
+         <li><a routerLink="/atendente">Gerenciamento</a></li> <!-- Apenas para atendentes -->
+         <!-- <li><a routerLink="/relatorios">Relatórios</a></li> -->
          <li><a routerLink="/pedidos">Pedidos</a></li>
-         <li><a routerLink="/logout">Logout</a></li>
+         <li><a routerLink="/minhaconta">Minha conta</a></li>
+         <li><a href="#" (click)="logout(); $event.preventDefault()">Logout</a></li>
       </ul>
    </nav>
 </header>

@@ -1,0 +1,22 @@
+<div class="login-screen">
+   <div class="login-container">
+
+      <h2>Login</h2>
+
+      <form>
+         <input type="email" placeholder="Email" [(ngModel)]="email" name="email" autocomplete="email" required>
+         <input type="password" placeholder="Senha" [(ngModel)]="password" name="password" autocomplete="password"
+            required>
+
+         <div class="form-footer">
+            <a href="#">Esqueceu a senha?</a>
+         </div>
+
+         <button type="submit" class="login-btn" (click)='login()'>Login</button>
+      </form>
+
+      <div class="bottom-text">
+         Não tem uma conta? <a routerLink="/signup">Criar conta</a>
+      </div>
+   </div>
+</div>

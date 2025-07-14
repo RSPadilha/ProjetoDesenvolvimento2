@@ -1,4 +1,4 @@
-<h1>Bem vindo, {{clients ? clients[0].name : "Ricardo"}}</h1>
+<!-- <h1>Bem vindo, {{clients ? clients[0].name : "Ricardo"}}</h1> -->
 
 <div class="novo-pedido-header">
    <h1>Novo solicitação</h1>
@@ -11,8 +11,9 @@
          <span>Tipo de serviço</span>
          <select>
             <option value="undefined"></option>
-            <option value="instalacao_ar">Instalação Ar-Condicionado</option>
-            <option value="remocao_ar">Remoção Ar-Condicionado</option>
+            @for (servico of services; track servico.id) {
+            <option [value]="servico.id">{{ servico.nome }}</option>
+            }
          </select>
          <span>Descrição</span>
          <input type="text">
