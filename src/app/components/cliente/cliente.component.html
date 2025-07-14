@@ -1,75 +1,98 @@
-<!-- <h1>Bem vindo, {{clients ? clients[0].name : "Ricardo"}}</h1> -->
-
 <div class="novo-pedido-header">
-   <h1>Novo solicitação</h1>
+   <h1>Nova Solicitação</h1>
    <div class="novo-pedido-divider"></div>
 </div>
 
 <div class="cliente-form-container">
-   <div class="cliente-form-row">
-      <div class="cliente-form-col">
-         <span>Tipo de serviço</span>
-         <select>
-            <option value="undefined"></option>
-            @for (servico of services; track servico.id) {
-            <option [value]="servico.id">{{ servico.nome }}</option>
-            }
-         </select>
-         <span>Descrição</span>
-         <input type="text">
-      </div>
-      <div class="cliente-form-col">
-         <span>Data</span>
-         <input type="date">
-         <span>Endereço</span>
-         <select>
-            <option value="undefined"></option>
-            <option value="rua exemplo 1">Senac - Coronel Genuíno, 130</option>
-            <option value="rua exemplo 2">Casa - Rua Exemplo 2, 456</option>
-         </select>
-      </div>
+   <div *ngIf="loading" class="loading-message">
+      <p>Processando...</p>
    </div>
-   <button class="cliente-form-btn" (click)='novoPedido($event)'>Novo pedido</button>
+
+   <div *ngIf="!usuarioId" class="error-message">
+      <p>Erro: Usuário não encontrado. Faça login novamente.</p>
+   </div>
+
+   <div *ngIf="usuarioId && !loading" class="cliente-form-content">
+      <div class="cliente-form-row">
+         <div class="cliente-form-col">
+            <label for="tipo-servico">Tipo de Serviço *</label>
+            <select id="tipo-servico" [(ngModel)]="novoPedidoForm.idServico" [disabled]="loading">
+               <option value="">Selecione um serviço</option>
+               @for (servico of tiposServico; track servico.id) {
+               <option [value]="servico.id">{{ servico.nome }}</option>
+               }
+            </select>
+
+            <label for="descricao">Descrição *</label>
+            <textarea id="descricao" [(ngModel)]="novoPedidoForm.descricao"
+               placeholder="Descreva detalhadamente o serviço desejado..." [disabled]="loading" rows="3">
+            </textarea>
+         </div>
+
+         <div class="cliente-form-col">
+            <label for="endereco">Endereço *</label>
+            <select id="endereco" [(ngModel)]="novoPedidoForm.idEndereco" [disabled]="loading">
+               <option value="">Selecione um endereço</option>
+               @for (endereco of enderecos; track endereco.id) {
+               <option [value]="endereco.id">
+                  {{ endereco.rua }}, {{ endereco.numero }}{{ endereco.complemento ? ' - ' + endereco.complemento : ''
+                  }}
+                  - {{ endereco.bairro }}, {{ endereco.cidade }}/{{ endereco.estado }}
+               </option>
+               }
+            </select>
+
+            <div *ngIf="enderecos.length === 0" class="info-message">
+               <p>Nenhum endereço cadastrado. <a href="/minha-conta">Cadastre um endereço</a> para continuar.</p>
+            </div>
+         </div>
+      </div>
+
+      <button class="cliente-form-btn" (click)="novoPedido()"
+         [disabled]="loading || !novoPedidoForm.idServico || !novoPedidoForm.descricao.trim() || !novoPedidoForm.idEndereco">
+         {{ loading ? 'Processando...' : 'Criar Pedido' }}
+      </button>
+   </div>
 </div>
 
 <div class="pedidos-section">
    <div class="pedidos-header">
-      <h2>Seus pedidos</h2>
+      <h2>Seus Pedidos</h2>
       <div class="pedidos-divider"></div>
    </div>
-   <div class="pedidos-table-wrapper">
+
+   <div *ngIf="pedidos.length === 0" class="empty-message">
+      <p>Você ainda não possui pedidos. Crie sua primeira solicitação acima!</p>
+   </div>
+
+   <div *ngIf="pedidos.length > 0" class="pedidos-table-wrapper">
       <table class="pedidos-table">
          <thead>
             <tr>
-               <th>Atendente</th>
-               <th>Tipo de serviço</th>
+               <th>Tipo de Serviço</th>
                <th>Descrição</th>
                <th>Endereço</th>
-               <th>Data início</th>
-               <th>Data finalizado</th>
+               <th>Data Criação</th>
                <th>Status</th>
                <th>Valor</th>
             </tr>
          </thead>
          <tbody>
-            @for (pedido of pedidos; track pedido) {
+            @for (pedido of pedidos; track pedido.id) {
             <tr>
-               <td>{{ pedido.atendente }}</td>
-               <td>{{ pedido.tipoServico }}</td>
-               <td>{{ pedido.descricao }}</td>
-               <td>{{ pedido.endereco }}</td>
-               <td>{{ pedido.dataInicio }}</td>
-               <td>{{ pedido.dataFinalizado }}</td>
-               <td>{{ pedido.status }}</td>
-               <td>{{ pedido.valor }}</td> <!-- Fazer pipe de dinheiro -->
+               <td>{{ pedido.nome_servico }}</td>
+               <td class="descricao-cell">{{ pedido.descricao }}</td>
+               <td class="endereco-cell">{{ pedido.endereco_completo }}</td>
+               <td>{{ formatarData(pedido.dataCriacao) }}</td>
+               <td>
+                  <span class="status-badge" [class]="'status-' + pedido.status.toLowerCase()">
+                     {{ pedido.status }}
+                  </span>
+               </td>
+               <td>{{ pedido.valor ? (pedido.valor | currency:'BRL':'symbol':'1.2-2') : 'A definir' }}</td>
             </tr>
             }
          </tbody>
       </table>
    </div>
 </div>
-
-<!-- Lista de clientes -->
-@for (client of clients; track client) {
-<h2>Client name: {{ client.name }}</h2>
-}

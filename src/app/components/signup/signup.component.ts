@@ -26,6 +26,21 @@ export class SignupComponent {
          console.error('Erro ao criar usuário:', error.message);
          return;
       }
+
+      const userId = data.user?.id;
+
+      if (userId) {
+         const { error: insertError } = await supabase
+            .from('usuarios')
+            .insert([{ nome: this.nomeCompleto, email: this.email, tipo: "cliente" }]);
+
+         if (insertError) {
+            console.error('Erro ao salvar na tabela usuarios:', insertError.message);
+         } else {
+            console.log('Usuário criado com sucesso!');
+         }
+      }
+
       console.log('Cadastrado com sucesso:', data);
 
       // Navegar para a rota raiz após cadastro bem-sucedido

@@ -1,0 +1,170 @@
+<div class="minha-conta-container">
+   <div class="minha-conta-header">
+      <h1>Minha Conta</h1>
+      <div class="minha-conta-divider"></div>
+   </div>
+
+   <div *ngIf="loading" class="loading">
+      <p>Carregando...</p>
+   </div>
+
+   <div *ngIf="!loading" class="minha-conta-content">
+      <!-- Dados pessoais -->
+      <div class="secao">
+         <h2>Dados Pessoais</h2>
+         <div class="form-group">
+            <label for="email">Email:</label>
+            <input type="email" id="email" [(ngModel)]="usuario.email" readonly class="readonly-input">
+         </div>
+
+         <div class="form-group">
+            <label for="nome">Nome:</label>
+            <input type="text" id="nome" [(ngModel)]="usuario.nome" placeholder="Digite seu nome completo">
+         </div>
+
+         <div class="form-group">
+            <label for="telefone">Telefone:</label>
+            <input type="text" id="telefone" [(ngModel)]="usuario.telefone" placeholder="(00) 00000-0000">
+         </div>
+
+         <button class="btn-salvar" (click)="salvarDadosUsuario()" [disabled]="loading">
+            {{ loading ? 'Salvando...' : 'Salvar Dados' }}
+         </button>
+      </div>
+
+      <!-- Endereços -->
+      <div class="secao">
+         <div class="secao-header">
+            <h2>Endereços</h2>
+            <button class="btn-adicionar" (click)="adicionandoEndereco = true" [disabled]="adicionandoEndereco">
+               + Adicionar Endereço
+            </button>
+         </div>
+
+         <!-- Formulário para novo endereço -->
+         <div *ngIf="adicionandoEndereco" class="endereco-form">
+            <h3>Novo Endereço</h3>
+            <div class="form-row">
+               <div class="form-group">
+                  <label for="novo-cep">CEP:</label>
+                  <input type="text" id="novo-cep" [(ngModel)]="novoEndereco.cep" placeholder="00000-000">
+               </div>
+               <div class="form-group">
+                  <label for="novo-estado">Estado:</label>
+                  <input type="text" id="novo-estado" [(ngModel)]="novoEndereco.estado" placeholder="Ex: SP">
+               </div>
+            </div>
+
+            <div class="form-row">
+               <div class="form-group">
+                  <label for="novo-cidade">Cidade:</label>
+                  <input type="text" id="novo-cidade" [(ngModel)]="novoEndereco.cidade" placeholder="Nome da cidade">
+               </div>
+               <div class="form-group">
+                  <label for="novo-bairro">Bairro:</label>
+                  <input type="text" id="novo-bairro" [(ngModel)]="novoEndereco.bairro" placeholder="Nome do bairro">
+               </div>
+            </div>
+
+            <div class="form-row">
+               <div class="form-group">
+                  <label for="novo-rua">Rua:</label>
+                  <input type="text" id="novo-rua" [(ngModel)]="novoEndereco.rua" placeholder="Nome da rua">
+               </div>
+               <div class="form-group">
+                  <label for="novo-numero">Número:</label>
+                  <input type="text" id="novo-numero" [(ngModel)]="novoEndereco.numero" placeholder="123">
+               </div>
+            </div>
+
+            <div class="form-group">
+               <label for="novo-complemento">Complemento:</label>
+               <input type="text" id="novo-complemento" [(ngModel)]="novoEndereco.complemento"
+                  placeholder="Apartamento, bloco, etc.">
+            </div>
+
+            <div class="form-actions">
+               <button class="btn-salvar" (click)="adicionarEndereco()" [disabled]="loading">
+                  {{ loading ? 'Salvando...' : 'Salvar Endereço' }}
+               </button>
+               <button class="btn-cancelar" (click)="cancelarNovoEndereco()" [disabled]="loading">
+                  Cancelar
+               </button>
+            </div>
+         </div>
+
+         <!-- Lista de endereços -->
+         <div class="enderecos-lista">
+            <div *ngFor="let endereco of usuario.enderecos" class="endereco-item">
+               <div *ngIf="!endereco.isEditing" class="endereco-view">
+                  <div class="endereco-info">
+                     <h4>Endereço</h4>
+                     <p>{{ endereco.rua }}, {{ endereco.numero }}</p>
+                     <p *ngIf="endereco.complemento">{{ endereco.complemento }}</p>
+                     <p>{{ endereco.bairro }} - {{ endereco.cidade }}/{{ endereco.estado }}</p>
+                     <p>CEP: {{ endereco.cep }}</p>
+                  </div>
+                  <div class="endereco-actions">
+                     <button class="btn-editar" (click)="editarEndereco(endereco)">Editar</button>
+                     <button class="btn-remover" (click)="removerEndereco(endereco)">Remover</button>
+                  </div>
+               </div>
+
+               <div *ngIf="endereco.isEditing" class="endereco-edit">
+                  <h4>Editando Endereço</h4>
+                  <div class="form-row">
+                     <div class="form-group">
+                        <label>CEP:</label>
+                        <input type="text" [(ngModel)]="endereco.cep" placeholder="00000-000">
+                     </div>
+                     <div class="form-group">
+                        <label>Estado:</label>
+                        <input type="text" [(ngModel)]="endereco.estado" placeholder="Ex: SP">
+                     </div>
+                  </div>
+
+                  <div class="form-row">
+                     <div class="form-group">
+                        <label>Cidade:</label>
+                        <input type="text" [(ngModel)]="endereco.cidade" placeholder="Nome da cidade">
+                     </div>
+                     <div class="form-group">
+                        <label>Bairro:</label>
+                        <input type="text" [(ngModel)]="endereco.bairro" placeholder="Nome do bairro">
+                     </div>
+                  </div>
+
+                  <div class="form-row">
+                     <div class="form-group">
+                        <label>Rua:</label>
+                        <input type="text" [(ngModel)]="endereco.rua" placeholder="Nome da rua">
+                     </div>
+                     <div class="form-group">
+                        <label>Número:</label>
+                        <input type="text" [(ngModel)]="endereco.numero" placeholder="123">
+                     </div>
+                  </div>
+
+                  <div class="form-group">
+                     <label>Complemento:</label>
+                     <input type="text" [(ngModel)]="endereco.complemento" placeholder="Apartamento, bloco, etc.">
+                  </div>
+
+                  <div class="form-actions">
+                     <button class="btn-salvar" (click)="salvarEndereco(endereco)" [disabled]="loading">
+                        {{ loading ? 'Salvando...' : 'Salvar' }}
+                     </button>
+                     <button class="btn-cancelar" (click)="cancelarEdicaoEndereco(endereco)" [disabled]="loading">
+                        Cancelar
+                     </button>
+                  </div>
+               </div>
+            </div>
+
+            <div *ngIf="usuario.enderecos.length === 0" class="enderecos-empty">
+               <p>Nenhum endereço cadastrado. Clique em "Adicionar Endereço" para começar.</p>
+            </div>
+         </div>
+      </div>
+   </div>
+</div>
