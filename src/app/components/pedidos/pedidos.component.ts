@@ -1,46 +1,176 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-pedidos',
-  imports: [],
+  standalone: true,
+  imports: [CommonModule, FormsModule],
   templateUrl: './pedidos.component.html',
   styleUrl: './pedidos.component.css'
 })
-export class PedidosComponent {
+export class PedidosComponent implements OnInit {
   pedidos: any[] = [];
+  usuarios: any[] = [];
+  editandoId: number | null = null;
+  pedidoEdit: any = {};
+  private apiUrl = 'http://localhost:5030/api';
 
-  async buscarTodosPedidos() {
-    try {
-      const res = await fetch(`https://pfs-api.onrender.com/pedidos`);
-      const pedidos = await res.json();
-      // Busca atendentes e serviços para mapear nomes
-      const [attendantsRes] = await Promise.all([
-        fetch('https://pfs-api.onrender.com/atendentes')
-        // fetch('http://localhost:3000/servicos')
-      ]);
-      const attendants = await attendantsRes.json();
-      // const services = await servicesRes.json();
+  constructor(private http: HttpClient) { }
 
-      this.pedidos = pedidos.map((pedido: any) => {
-        return {
-          id: pedido.id,
-          idCliente: pedido.cliente.id,
-          cliente: pedido.cliente.nome || '-',
-          atendente: pedido.atendente?.nome || '-',
-          descricao: pedido.descricao || '-',
-          endereco: pedido.cliente.endereco.rua || '-',
-          dataInicio: pedido.data ? new Date(pedido.data).toLocaleDateString() : '-',
-          dataFinalizado: pedido.dataFinalizado ? new Date(pedido.dataFinalizado).toLocaleDateString() : '-',
-          status: pedido.status || '-',
-          valor: pedido.valor || '-'
-        };
+  ngOnInit(): void {
+    this.carregarDados();
+  }
+
+  carregarDados() {
+    this.buscarPedidos();
+    this.buscarUsuarios();
+  }
+
+  buscarPedidos() {
+    this.http.get<any[]>(`${this.apiUrl}/pedidos`).subscribe({
+      next: (data) => {
+        this.pedidos = data.map(pedido => ({
+          ...pedido,
+          nomeCliente: pedido.cliente || 'Não informado',
+          nomeAtendente: pedido.atendente || 'Não atribuído',
+          nomeServico: pedido.servico || 'Não informado',
+          enderecoCompleto: pedido.endereco || 'Não informado',
+          dataFormatada: pedido.dataCriacao ? new Date(pedido.dataCriacao).toLocaleDateString('pt-BR') : '-'
+        }));
+      },
+      error: (error) => {
+        console.error('Erro ao buscar pedidos:', error);
+        this.pedidos = [];
+      }
+    });
+  }
+
+  buscarUsuarios() {
+    this.http.get<any[]>(`${this.apiUrl}/usuarios`).subscribe({
+      next: (data) => {
+        this.usuarios = data;
+      },
+      error: (error) => {
+        console.error('Erro ao buscar usuários:', error);
+        this.usuarios = [];
+      }
+    });
+  }
+
+  getNomeUsuario(id: number): string {
+    const usuario = this.usuarios.find(u => u.id === id);
+    return usuario ? usuario.nome : 'Não informado';
+  }
+
+  editarPedido(pedido: any) {
+    this.editandoId = pedido.id;
+    this.pedidoEdit = { ...pedido };
+  }
+
+  cancelarEdicao() {
+    this.editandoId = null;
+    this.pedidoEdit = {};
+  }
+
+  salvarEdicao() {
+    if (this.editandoId) {
+      // Preparar dados para envio (remover campos calculados)
+      const dadosParaEnvio = {
+        idCliente: this.pedidoEdit.idCliente,
+        idAtendente: this.pedidoEdit.idAtendente,
+        idServico: this.pedidoEdit.idServico,
+        descricao: this.pedidoEdit.descricao,
+        idEndereco: this.pedidoEdit.idEndereco,
+        status: this.pedidoEdit.status,
+        dataConclusao: this.pedidoEdit.status === 'concluído' ? new Date().toISOString() : null
+      };
+
+      this.http.put(`${this.apiUrl}/pedidos/${this.editandoId}`, dadosParaEnvio).subscribe({
+        next: () => {
+          this.buscarPedidos();
+          this.cancelarEdicao();
+        },
+        error: (error) => {
+          console.error('Erro ao atualizar pedido:', error);
+        }
       });
-    } catch (e) {
-      this.pedidos = [];
     }
   }
 
-  async ngOnInit() { //ng... versão antiga do angular
-    await this.buscarTodosPedidos();
+  deletarPedido(id: number) {
+    if (confirm('Tem certeza que deseja deletar este pedido?')) {
+      this.http.delete(`${this.apiUrl}/pedidos/${id}`).subscribe({
+        next: () => {
+          this.pedidos = this.pedidos.filter(p => p.id !== id);
+        },
+        error: (error) => {
+          console.error('Erro ao deletar pedido:', error);
+        }
+      });
+    }
+  }
+
+  atribuirAtendente(pedidoId: number, atendenteId: number) {
+    const dadosParaEnvio = {
+      idAtendente: atendenteId,
+      status: 'em_andamento'
+    };
+
+    this.http.put(`${this.apiUrl}/pedidos/${pedidoId}`, dadosParaEnvio).subscribe({
+      next: () => {
+        this.buscarPedidos();
+      },
+      error: (error) => {
+        console.error('Erro ao atribuir atendente:', error);
+      }
+    });
+  }
+
+  concluirPedido(pedidoId: number) {
+    const dadosParaEnvio = {
+      status: 'concluído',
+      dataConclusao: new Date().toISOString()
+    };
+
+    this.http.put(`${this.apiUrl}/pedidos/${pedidoId}`, dadosParaEnvio).subscribe({
+      next: () => {
+        this.buscarPedidos();
+      },
+      error: (error) => {
+        console.error('Erro ao concluir pedido:', error);
+      }
+    });
+  }
+
+  atualizarStatus(pedidoId: number, novoStatus: string) {
+    const dadosParaEnvio = {
+      status: novoStatus
+    };
+
+    this.http.put(`${this.apiUrl}/pedidos/${pedidoId}`, dadosParaEnvio).subscribe({
+      next: () => {
+        console.log(`Status do pedido ${pedidoId} atualizado para: ${novoStatus}`);
+      },
+      error: (error) => {
+        console.error('Erro ao atualizar status do pedido:', error);
+        // Reverter o status em caso de erro
+        this.buscarPedidos();
+      }
+    });
+  }
+
+  getAtendentesDisponiveis() {
+    return this.usuarios.filter(u => u.tipo === 'atendente' || u.tipo === 'admin');
+  }
+
+  getStatusClass(status: string): string {
+    switch (status) {
+      case 'pendente': return 'status-pendente';
+      case 'em_andamento': return 'status-andamento';
+      case 'concluído': return 'status-concluido';
+      default: return 'status-default';
+    }
   }
 }

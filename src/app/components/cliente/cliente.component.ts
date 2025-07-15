@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { supabase } from '../../services/supabase';
+import { HttpClient } from '@angular/common/http';
 import { AuthService } from '../../services/auth.service';
 
 interface TipoServico {
@@ -24,7 +24,7 @@ interface Endereco {
 
 interface Pedido {
    id?: number;
-   idCliente: number;
+   idCliente: string;
    idServico: number;
    descricao: string;
    idEndereco: number;
@@ -54,7 +54,8 @@ export class ClienteComponent implements OnInit {
    tiposServico: TipoServico[] = [];
    enderecos: Endereco[] = [];
    loading = false;
-   usuarioId: number | null = null;
+   usuarioId: string | null = null;
+   private apiUrl = 'http://localhost:5030/api';
 
    // Formulário para novo pedido
    novoPedidoForm: NovoPedidoForm = {
@@ -63,37 +64,66 @@ export class ClienteComponent implements OnInit {
       idEndereco: null
    };
 
-   constructor(private authService: AuthService) { }
+   constructor(private http: HttpClient, private authService: AuthService) { }
 
    async ngOnInit() {
       await this.carregarUsuario();
-      await this.carregarTiposServico();
-      await this.carregarEnderecos();
-      await this.carregarPedidos();
+
+      // Só carrega os dados se o usuário foi carregado com sucesso
+      if (this.usuarioId) {
+         await this.carregarTiposServico();
+         await this.carregarEnderecos();
+         await this.carregarPedidos();
+      }
    }
 
    async carregarUsuario() {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (user) {
-         const { data } = await supabase
-            .from('usuarios')
-            .select('id')
-            .eq('email', user.email)
-            .single();
+      try {
+         // Obter o usuário logado do Supabase
+         const user = await this.authService.getCurrentUser();
 
-         this.usuarioId = data?.id || null;
+         if (!user || !user.email) {
+            console.error('Usuário não está logado ou não tem e-mail');
+            return;
+         }
+
+         console.log('E-mail do usuário logado:', user.email);
+
+         // Fazer requisição para obter todos os usuários usando Promise
+         const usuarios = await new Promise<any[]>((resolve, reject) => {
+            this.http.get<any[]>(`${this.apiUrl}/usuarios`).subscribe({
+               next: (data) => resolve(data),
+               error: (error) => reject(error)
+            });
+         });
+
+         // Encontrar o usuário com o mesmo e-mail
+         const usuarioEncontrado = usuarios.find(u => u.email === user.email);
+
+         if (usuarioEncontrado) {
+            this.usuarioId = usuarioEncontrado.id.toString();
+            console.log('ID do usuário na tabela usuarios:', this.usuarioId);
+         } else {
+            console.error('Usuário não encontrado na tabela usuarios');
+            this.usuarioId = null;
+         }
+      } catch (error) {
+         console.error('Erro ao carregar usuário:', error);
+         this.usuarioId = null;
       }
    }
 
    async carregarTiposServico() {
       try {
-         const { data, error } = await supabase
-            .from('servicos')
-            .select('*')
-            .order('nome');
-
-         if (error) throw error;
-         this.tiposServico = data || [];
+         this.http.get<any[]>(`${this.apiUrl}/servicos`).subscribe({
+            next: (data) => {
+               this.tiposServico = data || [];
+            },
+            error: (error) => {
+               console.error('Erro ao carregar tipos de serviço:', error);
+               this.tiposServico = [];
+            }
+         });
       } catch (error) {
          console.error('Erro ao carregar tipos de serviço:', error);
          this.tiposServico = [];
@@ -104,13 +134,17 @@ export class ClienteComponent implements OnInit {
       if (!this.usuarioId) return;
 
       try {
-         const { data, error } = await supabase
-            .from('endereco')
-            .select('*')
-            .eq('id_usuario', this.usuarioId);
-
-         if (error) throw error;
-         this.enderecos = data || [];
+         // Fazer requisição usando o ID da tabela usuarios
+         this.http.get<any[]>(`${this.apiUrl}/enderecos/usuario/${this.usuarioId}`).subscribe({
+            next: (data) => {
+               this.enderecos = data || [];
+               console.log('Endereços carregados:', this.enderecos);
+            },
+            error: (error) => {
+               console.error('Erro ao carregar endereços:', error);
+               this.enderecos = [];
+            }
+         });
       } catch (error) {
          console.error('Erro ao carregar endereços:', error);
          this.enderecos = [];
@@ -121,27 +155,40 @@ export class ClienteComponent implements OnInit {
       if (!this.usuarioId) return;
 
       try {
-         const { data, error } = await supabase
-            .from('pedidos')
-            .select(`
-               *,
-               servicos!inner(nome, descricao),
-               endereco!inner(rua, numero, complemento, bairro, cidade, estado, cep)
-            `)
-            .eq('idCliente', this.usuarioId)
-            .order('dataCriacao', { ascending: false });
+         // Buscar todos os pedidos e filtrar pelo cliente
+         this.http.get<any[]>(`${this.apiUrl}/pedidos`).subscribe({
+            next: (todosPedidos) => {
+               // Filtrar pedidos do usuário atual
+               const pedidosDoUsuario = todosPedidos.filter(p => p.idCliente.toString() === this.usuarioId);
 
-         if (error) throw error;
+               if (pedidosDoUsuario.length === 0) {
+                  this.pedidos = [];
+                  console.log('Nenhum pedido encontrado para o usuário');
+                  return;
+               }
 
-         this.pedidos = (data || []).map(pedido => ({
-            ...pedido,
-            nome_servico: pedido.servicos?.nome || 'Serviço não encontrado',
-            endereco_completo: `${pedido.endereco?.rua}, ${pedido.endereco?.numero}${pedido.endereco?.complemento ? ' - ' + pedido.endereco.complemento : ''} - ${pedido.endereco?.bairro}, ${pedido.endereco?.cidade}/${pedido.endereco?.estado}`
-         }));
+               // Mapear pedidos usando as informações já retornadas pela API
+               this.pedidos = pedidosDoUsuario.map((pedido: any) => ({
+                  ...pedido,
+                  nome_servico: pedido.servico || 'Serviço não encontrado',
+                  endereco_completo: pedido.endereco || 'Endereço não encontrado'
+               }));
+
+               console.log('Pedidos carregados:', this.pedidos);
+            },
+            error: (error) => {
+               console.error('Erro ao carregar pedidos:', error);
+               this.pedidos = [];
+            }
+         });
       } catch (error) {
          console.error('Erro ao carregar pedidos:', error);
          this.pedidos = [];
       }
+   }
+
+   async recarregarEnderecos() {
+      await this.carregarEnderecos();
    }
 
    async novoPedido() {
@@ -153,33 +200,37 @@ export class ClienteComponent implements OnInit {
       this.loading = true;
 
       try {
-         const { data, error } = await supabase
-            .from('pedidos')
-            .insert({
-               idCliente: this.usuarioId,
-               idServico: this.novoPedidoForm.idServico,
-               descricao: this.novoPedidoForm.descricao.trim(),
-               idEndereco: this.novoPedidoForm.idEndereco,
-               dataCriacao: new Date().toISOString(),
-               status: 'pendente'
-            })
-            .select()
-            .single();
-
-         if (error) throw error;
-
-         // Limpar formulário
-         this.novoPedidoForm = {
-            idServico: null,
-            descricao: '',
-            idEndereco: null
+         const novoPedido = {
+            idCliente: this.usuarioId,
+            idServico: this.novoPedidoForm.idServico,
+            descricao: this.novoPedidoForm.descricao.trim(),
+            idEndereco: this.novoPedidoForm.idEndereco,
+            dataCriacao: new Date().toISOString(),
+            status: 'pendente'
          };
 
-         // Recarregar pedidos
-         await this.carregarPedidos();
+         this.http.post<any>(`${this.apiUrl}/pedidos`, novoPedido).subscribe({
+            next: (data) => {
+               // Limpar formulário
+               this.novoPedidoForm = {
+                  idServico: null,
+                  descricao: '',
+                  idEndereco: null
+               };
 
-         alert('Pedido criado com sucesso!');
-      } catch (error) {
+               // Recarregar pedidos
+               this.carregarPedidos();
+               alert('Pedido criado com sucesso!');
+            },
+            error: (error) => {
+               console.error('Erro ao criar pedido:', error);
+               alert('Erro ao criar pedido. Tente novamente.');
+            },
+            complete: () => {
+               this.loading = false;
+            }
+         });
+      } catch (error: any) {
          console.error('Erro ao criar pedido:', error);
          alert('Erro ao criar pedido. Tente novamente.');
       } finally {

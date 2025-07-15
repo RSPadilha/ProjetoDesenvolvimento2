@@ -10,14 +10,11 @@
                <th>ID pedido</th>
                <th>ID cliente</th>
                <th>Cliente</th>
-               <th>Atendente</th>
                <th>Tipo de serviço</th>
                <th>Descrição</th>
                <th>Endereço</th>
-               <th>Data início</th>
-               <th>Data finalizado</th>
                <th>Status</th>
-               <th>Valor</th>
+               <th>Data Criação</th>
             </tr>
          </thead>
          <tbody>
@@ -25,15 +22,19 @@
             <tr>
                <td>{{ pedido.id }}</td>
                <td>{{ pedido.idCliente }}</td>
-               <td>{{ pedido.cliente }}</td>
-               <td>{{ pedido.atendente }}</td>
-               <td>{{ pedido.tipoServico }}</td>
+               <td>{{ pedido.nomeCliente }}</td>
+               <td>{{ pedido.nomeServico }}</td>
                <td>{{ pedido.descricao }}</td>
-               <td>{{ pedido.endereco }}</td>
-               <td>{{ pedido.dataInicio }}</td>
-               <td>{{ pedido.dataFinalizado }}</td>
-               <td>{{ pedido.status }}</td>
-               <td>{{ pedido.valor }}</td> <!-- Fazer pipe de dinheiro -->
+               <td>{{ pedido.enderecoCompleto }}</td>
+               <td>
+                  <select [(ngModel)]="pedido.status" (change)="atualizarStatus(pedido.id, pedido.status)"
+                     [class]="getStatusClass(pedido.status)" class="status-select">
+                     <option value="pendente">Pendente</option>
+                     <option value="em_andamento">Em Andamento</option>
+                     <option value="concluído">Concluído</option>
+                  </select>
+               </td>
+               <td>{{ pedido.dataFormatada }}</td>
             </tr>
             }
          </tbody>

@@ -1,145 +1,267 @@
-<h2 class="clientes-title">Gerenciamento</h2>
-<div style="text-align:center; margin-bottom: 20px;">
-   <button (click)="novoCliente()" class="btn-salvar">Adicionar Novo Cliente</button>
-</div>
-<div *ngIf="clientes.length === 0" class="clientes-empty">Nenhum cliente encontrado.</div>
-<div *ngIf="clientes.length > 0 || criandoNovo" class="clientes-list">
-   <div *ngIf="criandoNovo" class="cliente-card">
-      <form #novoClienteForm="ngForm" (ngSubmit)="salvarNovoCliente(novoClienteForm)">
-         <label><strong>Nome:</strong><br>
-            <input [(ngModel)]="clienteEdit.nome" name="nomeNovo" required class="input-full" #nomeNovo="ngModel" />
-         </label>
-         <div *ngIf="nomeNovo.invalid && (nomeNovo.touched || nomeNovo.dirty || novoClienteForm.submitted)"
-            class="erro-campo">Nome é obrigatório.</div><br>
-         <label><strong>Telefone:</strong><br>
-            <input [(ngModel)]="clienteEdit.telefone" name="telefoneNovo" required class="input-full"
-               #telefoneNovo="ngModel" />
-         </label>
-         <div *ngIf="telefoneNovo.invalid && (telefoneNovo.touched || telefoneNovo.dirty || novoClienteForm.submitted)"
-            class="erro-campo">Telefone é obrigatório.</div><br>
-         <label><strong>Email:</strong><br>
-            <input [(ngModel)]="clienteEdit.email" name="emailNovo" required class="input-full" #emailNovo="ngModel" />
-         </label>
-         <div *ngIf="emailNovo.invalid && (emailNovo.touched || emailNovo.dirty || novoClienteForm.submitted)"
-            class="erro-campo">Email é obrigatório.</div><br>
-         <label><strong>Senha:</strong><br>
-            <input [(ngModel)]="clienteEdit.senha" name="senhaNova" required class="input-full" #senhaNova="ngModel" />
-         </label>
-         <div *ngIf="senhaNova.invalid && (senhaNova.touched || senhaNova.dirty || novoClienteForm.submitted)"
-            class="erro-campo">Senha é obrigatória.</div><br>
-         <fieldset class="fieldset-endereco">
-            <legend>Endereço</legend>
-            <label>CEP:<br>
-               <input [(ngModel)]="clienteEdit.endereco.cep" name="cepNovo" required class="input-full"
-                  #cepNovo="ngModel" />
-            </label>
-            <div *ngIf="cepNovo.invalid && (cepNovo.touched || cepNovo.dirty || novoClienteForm.submitted)"
-               class="erro-campo">CEP é obrigatório.</div><br>
-            <label>Estado:<br>
-               <input [(ngModel)]="clienteEdit.endereco.estado" name="estadoNovo" required class="input-full"
-                  #estadoNovo="ngModel" />
-            </label>
-            <div *ngIf="estadoNovo.invalid && (estadoNovo.touched || estadoNovo.dirty || novoClienteForm.submitted)"
-               class="erro-campo">Estado é obrigatório.</div><br>
-            <label>Cidade:<br>
-               <input [(ngModel)]="clienteEdit.endereco.cidade" name="cidadeNovo" required class="input-full"
-                  #cidadeNovo="ngModel" />
-            </label>
-            <div *ngIf="cidadeNovo.invalid && (cidadeNovo.touched || cidadeNovo.dirty || novoClienteForm.submitted)"
-               class="erro-campo">Cidade é obrigatória.</div><br>
-            <label>Rua:<br>
-               <input [(ngModel)]="clienteEdit.endereco.rua" name="ruaNovo" required class="input-full"
-                  #ruaNovo="ngModel" />
-            </label>
-            <div *ngIf="ruaNovo.invalid && (ruaNovo.touched || ruaNovo.dirty || novoClienteForm.submitted)"
-               class="erro-campo">Rua é obrigatória.</div><br>
-            <label>Bairro:<br>
-               <input [(ngModel)]="clienteEdit.endereco.bairro" name="bairroNovo" required class="input-full"
-                  #bairroNovo="ngModel" />
-            </label>
-            <div *ngIf="bairroNovo.invalid && (bairroNovo.touched || bairroNovo.dirty || novoClienteForm.submitted)"
-               class="erro-campo">Bairro é obrigatório.</div><br>
-            <label>Número:<br>
-               <input [(ngModel)]="clienteEdit.endereco.numero" name="numeroNovo" required class="input-full"
-                  #numeroNovo="ngModel" />
-            </label>
-            <div *ngIf="numeroNovo.invalid && (numeroNovo.touched || numeroNovo.dirty || novoClienteForm.submitted)"
-               class="erro-campo">Número é obrigatório.</div><br>
-            <label>Complemento:<br>
-               <input [(ngModel)]="clienteEdit.endereco.complemento" name="complementoNovo" required class="input-full"
-                  #complementoNovo="ngModel" />
-            </label>
-            <div
-               *ngIf="complementoNovo.invalid && (complementoNovo.touched || complementoNovo.dirty || novoClienteForm.submitted)"
-               class="erro-campo">Complemento é obrigatório.</div>
-         </fieldset>
-         <div class="cliente-actions">
-            <button type="submit" class="btn-salvar">Salvar</button>
-            <button type="button" (click)="cancelarEdicao()" class="btn-cancelar">Cancelar</button>
-         </div>
-      </form>
+<div class="gerenciamento-container">
+   <div class="abas-container">
+      <button (click)="mudarAba('clientes')" [class.aba-ativa]="abaAtiva === 'clientes'" class="aba-btn">
+         Gerenciar Clientes
+      </button>
+      <button (click)="mudarAba('servicos')" [class.aba-ativa]="abaAtiva === 'servicos'" class="aba-btn">
+         Gerenciar Serviços
+      </button>
    </div>
-   <div *ngFor="let cliente of clientes" class="cliente-card">
-      <ng-container *ngIf="editandoId !== cliente.id; else editForm">
-         <strong>ID:</strong> {{cliente.id}}<br>
-         <strong>Nome:</strong> {{cliente.nome}}<br>
-         <strong>Telefone:</strong> {{cliente.telefone}}<br>
-         <strong>Email:</strong> {{cliente.email}}<br>
-         <strong>Endereço:</strong>
-         <ul class="cliente-endereco-list">
-            <li><strong>CEP:</strong> {{cliente.endereco?.cep}}</li>
-            <li><strong>Estado:</strong> {{cliente.endereco?.estado}}</li>
-            <li><strong>Cidade:</strong> {{cliente.endereco?.cidade}}</li>
-            <li><strong>Rua:</strong> {{cliente.endereco?.rua}}</li>
-            <li><strong>Bairro:</strong> {{cliente.endereco?.bairro}}</li>
-            <li><strong>Número:</strong> {{cliente.endereco?.numero}}</li>
-            <li><strong>Complemento:</strong> {{cliente.endereco?.complemento}}</li>
-         </ul>
-         <div class="cliente-actions">
-            <button (click)="editarCliente(cliente)" class="btn-editar">Editar</button>
-            <button (click)="deletarCliente(cliente.id)" class="btn-deletar">Deletar</button>
-         </div>
-      </ng-container>
-      <ng-template #editForm>
-         <form (ngSubmit)="salvarEdicao()">
-            <label><strong>Nome:</strong><br>
-               <input [(ngModel)]="clienteEdit.nome" name="nome" required class="input-full" />
-            </label><br>
-            <label><strong>Telefone:</strong><br>
-               <input [(ngModel)]="clienteEdit.telefone" name="telefone" required class="input-full" />
-            </label><br>
-            <label><strong>Email:</strong><br>
-               <input [(ngModel)]="clienteEdit.email" name="email" required class="input-full" />
-            </label><br>
-            <fieldset class="fieldset-endereco">
-               <legend>Endereço</legend>
-               <label>CEP:<br>
-                  <input [(ngModel)]="clienteEdit.endereco.cep" name="cep" class="input-full" />
-               </label><br>
-               <label>Estado:<br>
-                  <input [(ngModel)]="clienteEdit.endereco.estado" name="estado" class="input-full" />
-               </label><br>
-               <label>Cidade:<br>
-                  <input [(ngModel)]="clienteEdit.endereco.cidade" name="cidade" class="input-full" />
-               </label><br>
-               <label>Rua:<br>
-                  <input [(ngModel)]="clienteEdit.endereco.rua" name="rua" class="input-full" />
-               </label><br>
-               <label>Bairro:<br>
-                  <input [(ngModel)]="clienteEdit.endereco.bairro" name="bairro" class="input-full" />
-               </label><br>
-               <label>Número:<br>
-                  <input [(ngModel)]="clienteEdit.endereco.numero" name="numero" class="input-full" />
-               </label><br>
-               <label>Complemento:<br>
-                  <input [(ngModel)]="clienteEdit.endereco.complemento" name="complemento" class="input-full" />
+
+   <!-- Aba de Clientes -->
+   <div *ngIf="abaAtiva === 'clientes'">
+      <h2 class="clientes-title">Gerenciamento de Clientes</h2>
+      <div style="text-align:center; margin-bottom: 20px;">
+         <button (click)="novoCliente()" class="btn-salvar">Adicionar Novo Cliente</button>
+      </div>
+      <div *ngIf="clientes.length === 0" class="clientes-empty">Nenhum cliente encontrado.</div>
+      <div *ngIf="clientes.length > 0 || criandoNovo" class="clientes-list">
+         <div *ngIf="criandoNovo" class="cliente-card">
+            <form #novoClienteForm="ngForm" (ngSubmit)="salvarNovoCliente(novoClienteForm)">
+               <label><strong>Nome:</strong><br>
+                  <input [(ngModel)]="clienteEdit.nome" name="nomeNovo" required class="input-full"
+                     #nomeNovo="ngModel" />
                </label>
-            </fieldset>
-            <div class="cliente-actions">
-               <button type="submit" class="btn-salvar">Salvar</button>
-               <button type="button" (click)="cancelarEdicao()" class="btn-cancelar">Cancelar</button>
-            </div>
-         </form>
-      </ng-template>
+               <div *ngIf="nomeNovo.invalid && (nomeNovo.touched || nomeNovo.dirty || novoClienteForm.submitted)"
+                  class="erro-campo">Nome é obrigatório.</div><br>
+               <label><strong>Telefone:</strong><br>
+                  <input [(ngModel)]="clienteEdit.telefone" name="telefoneNovo" required class="input-full"
+                     #telefoneNovo="ngModel" />
+               </label>
+               <div
+                  *ngIf="telefoneNovo.invalid && (telefoneNovo.touched || telefoneNovo.dirty || novoClienteForm.submitted)"
+                  class="erro-campo">Telefone é obrigatório.</div><br>
+               <label><strong>Email:</strong><br>
+                  <input [(ngModel)]="clienteEdit.email" name="emailNovo" required class="input-full"
+                     #emailNovo="ngModel" />
+               </label>
+               <div *ngIf="emailNovo.invalid && (emailNovo.touched || emailNovo.dirty || novoClienteForm.submitted)"
+                  class="erro-campo">Email é obrigatório.</div><br>
+               <label><strong>Senha:</strong><br>
+                  <input [(ngModel)]="clienteEdit.senha" name="senhaNova" required class="input-full"
+                     #senhaNova="ngModel" />
+               </label>
+               <div *ngIf="senhaNova.invalid && (senhaNova.touched || senhaNova.dirty || novoClienteForm.submitted)"
+                  class="erro-campo">Senha é obrigatória.</div><br>
+               <fieldset class="fieldset-endereco">
+                  <legend>Endereço</legend>
+                  <label>CEP:<br>
+                     <input [(ngModel)]="clienteEdit.endereco.cep" name="cepNovo" required class="input-full"
+                        #cepNovo="ngModel" />
+                  </label>
+                  <div *ngIf="cepNovo.invalid && (cepNovo.touched || cepNovo.dirty || novoClienteForm.submitted)"
+                     class="erro-campo">CEP é obrigatório.</div><br>
+                  <label>Estado:<br>
+                     <input [(ngModel)]="clienteEdit.endereco.estado" name="estadoNovo" required class="input-full"
+                        #estadoNovo="ngModel" />
+                  </label>
+                  <div
+                     *ngIf="estadoNovo.invalid && (estadoNovo.touched || estadoNovo.dirty || novoClienteForm.submitted)"
+                     class="erro-campo">Estado é obrigatório.</div><br>
+                  <label>Cidade:<br>
+                     <input [(ngModel)]="clienteEdit.endereco.cidade" name="cidadeNovo" required class="input-full"
+                        #cidadeNovo="ngModel" />
+                  </label>
+                  <div
+                     *ngIf="cidadeNovo.invalid && (cidadeNovo.touched || cidadeNovo.dirty || novoClienteForm.submitted)"
+                     class="erro-campo">Cidade é obrigatória.</div><br>
+                  <label>Rua:<br>
+                     <input [(ngModel)]="clienteEdit.endereco.rua" name="ruaNovo" required class="input-full"
+                        #ruaNovo="ngModel" />
+                  </label>
+                  <div *ngIf="ruaNovo.invalid && (ruaNovo.touched || ruaNovo.dirty || novoClienteForm.submitted)"
+                     class="erro-campo">Rua é obrigatória.</div><br>
+                  <label>Bairro:<br>
+                     <input [(ngModel)]="clienteEdit.endereco.bairro" name="bairroNovo" required class="input-full"
+                        #bairroNovo="ngModel" />
+                  </label>
+                  <div
+                     *ngIf="bairroNovo.invalid && (bairroNovo.touched || bairroNovo.dirty || novoClienteForm.submitted)"
+                     class="erro-campo">Bairro é obrigatório.</div><br>
+                  <label>Número:<br>
+                     <input [(ngModel)]="clienteEdit.endereco.numero" name="numeroNovo" required class="input-full"
+                        #numeroNovo="ngModel" />
+                  </label>
+                  <div
+                     *ngIf="numeroNovo.invalid && (numeroNovo.touched || numeroNovo.dirty || novoClienteForm.submitted)"
+                     class="erro-campo">Número é obrigatório.</div><br>
+                  <label>Complemento:<br>
+                     <input [(ngModel)]="clienteEdit.endereco.complemento" name="complementoNovo" required
+                        class="input-full" #complementoNovo="ngModel" />
+                  </label>
+                  <div
+                     *ngIf="complementoNovo.invalid && (complementoNovo.touched || complementoNovo.dirty || novoClienteForm.submitted)"
+                     class="erro-campo">Complemento é obrigatório.</div>
+               </fieldset>
+               <div class="cliente-actions">
+                  <button type="submit" class="btn-salvar">Salvar</button>
+                  <button type="button" (click)="cancelarEdicao()" class="btn-cancelar">Cancelar</button>
+               </div>
+            </form>
+         </div>
+         <div *ngFor="let cliente of clientes" class="cliente-card">
+            <ng-container *ngIf="editandoId !== cliente.id; else editForm">
+               <strong>ID:</strong> {{cliente.id}}<br>
+               <strong>Nome:</strong> {{cliente.nome}}<br>
+               <strong>Telefone:</strong> {{cliente.telefone}}<br>
+               <strong>Email:</strong> {{cliente.email}}<br>
+               <strong>Endereço:</strong>
+               <div
+                  *ngIf="cliente.endereco_completo !== 'Endereço não cadastrado' && cliente.endereco_completo !== 'Erro ao carregar endereço'; else semEndereco">
+                  <div class="endereco-info">
+                     {{cliente.endereco_completo}}<br>
+                     <strong>CEP:</strong> {{cliente.cep}}
+                  </div>
+                  <div *ngIf="cliente.enderecos && cliente.enderecos.length > 1" class="enderecos-adicionais">
+                     <details>
+                        <summary>Ver todos os endereços ({{cliente.enderecos.length}})</summary>
+                        <ul class="cliente-endereco-list">
+                           <li *ngFor="let endereco of cliente.enderecos; let i = index">
+                              <strong>Endereço {{i + 1}}:</strong><br>
+                              {{endereco.rua}}, {{endereco.numero}}
+                              <span *ngIf="endereco.complemento"> - {{endereco.complemento}}</span>
+                              <br>{{endereco.bairro}}, {{endereco.cidade}}/{{endereco.estado}}
+                              <br><strong>CEP:</strong> {{endereco.cep}}
+                           </li>
+                        </ul>
+                     </details>
+                  </div>
+               </div>
+               <ng-template #semEndereco>
+                  <div class="endereco-info sem-endereco">
+                     {{cliente.endereco_completo || 'Endereço não cadastrado'}}
+                  </div>
+               </ng-template>
+               <div class="cliente-actions">
+                  <button (click)="deletarCliente(cliente.id)" class="btn-deletar">Deletar</button>
+               </div>
+            </ng-container>
+            <ng-template #editForm>
+               <form (ngSubmit)="salvarEdicao()">
+                  <label><strong>Nome:</strong><br>
+                     <input [(ngModel)]="clienteEdit.nome" name="nome" required class="input-full" />
+                  </label><br>
+                  <label><strong>Telefone:</strong><br>
+                     <input [(ngModel)]="clienteEdit.telefone" name="telefone" required class="input-full" />
+                  </label><br>
+                  <label><strong>Email:</strong><br>
+                     <input [(ngModel)]="clienteEdit.email" name="email" required class="input-full" />
+                  </label><br>
+                  <fieldset class="fieldset-endereco">
+                     <legend>Endereço</legend>
+                     <label>CEP:<br>
+                        <input [(ngModel)]="clienteEdit.endereco.cep" name="cep" class="input-full" />
+                     </label><br>
+                     <label>Estado:<br>
+                        <input [(ngModel)]="clienteEdit.endereco.estado" name="estado" class="input-full" />
+                     </label><br>
+                     <label>Cidade:<br>
+                        <input [(ngModel)]="clienteEdit.endereco.cidade" name="cidade" class="input-full" />
+                     </label><br>
+                     <label>Rua:<br>
+                        <input [(ngModel)]="clienteEdit.endereco.rua" name="rua" class="input-full" />
+                     </label><br>
+                     <label>Bairro:<br>
+                        <input [(ngModel)]="clienteEdit.endereco.bairro" name="bairro" class="input-full" />
+                     </label><br>
+                     <label>Número:<br>
+                        <input [(ngModel)]="clienteEdit.endereco.numero" name="numero" class="input-full" />
+                     </label><br>
+                     <label>Complemento:<br>
+                        <input [(ngModel)]="clienteEdit.endereco.complemento" name="complemento" class="input-full" />
+                     </label>
+                  </fieldset>
+                  <div class="cliente-actions">
+                     <button type="submit" class="btn-salvar">Salvar</button>
+                     <button type="button" (click)="cancelarEdicao()" class="btn-cancelar">Cancelar</button>
+                  </div>
+               </form>
+            </ng-template>
+         </div>
+      </div>
+   </div>
+
+   <!-- Aba de Serviços -->
+   <div *ngIf="abaAtiva === 'servicos'">
+      <h2 class="servicos-title">Gerenciamento de Serviços</h2>
+      <div style="text-align:center; margin-bottom: 20px;">
+         <button (click)="novoServico()" class="btn-salvar">Adicionar Novo Serviço</button>
+      </div>
+
+      <div *ngIf="servicos.length === 0" class="servicos-empty">Nenhum serviço encontrado.</div>
+
+      <div *ngIf="servicos.length > 0 || criandoNovoServico" class="servicos-list">
+         <!-- Formulário para novo serviço -->
+         <div *ngIf="criandoNovoServico" class="servico-card">
+            <form #novoServicoForm="ngForm" (ngSubmit)="salvarNovoServico(novoServicoForm)">
+               <label><strong>Nome:</strong><br>
+                  <input [(ngModel)]="servicoEdit.nome" name="nomeServicoNovo" required class="input-full"
+                     #nomeServicoNovo="ngModel" />
+               </label>
+               <div
+                  *ngIf="nomeServicoNovo.invalid && (nomeServicoNovo.touched || nomeServicoNovo.dirty || novoServicoForm.submitted)"
+                  class="erro-campo">Nome é obrigatório.</div><br>
+
+               <label><strong>Descrição:</strong><br>
+                  <textarea [(ngModel)]="servicoEdit.descricao" name="descricaoServicoNovo" required
+                     class="input-full textarea-field" #descricaoServicoNovo="ngModel"></textarea>
+               </label>
+               <div
+                  *ngIf="descricaoServicoNovo.invalid && (descricaoServicoNovo.touched || descricaoServicoNovo.dirty || novoServicoForm.submitted)"
+                  class="erro-campo">Descrição é obrigatória.</div><br>
+
+               <label><strong>Preço Base (R$):</strong><br>
+                  <input [(ngModel)]="servicoEdit.precoBase" name="precoBaseServicoNovo" required type="number"
+                     step="0.01" min="0" class="input-full" #precoBaseServicoNovo="ngModel" />
+               </label>
+               <div
+                  *ngIf="precoBaseServicoNovo.invalid && (precoBaseServicoNovo.touched || precoBaseServicoNovo.dirty || novoServicoForm.submitted)"
+                  class="erro-campo">Preço base é obrigatório.</div><br>
+
+               <div class="servico-actions">
+                  <button type="submit" class="btn-salvar">Salvar</button>
+                  <button type="button" (click)="cancelarEdicaoServico()" class="btn-cancelar">Cancelar</button>
+               </div>
+            </form>
+         </div>
+
+         <!-- Lista de serviços -->
+         <div *ngFor="let servico of servicos" class="servico-card">
+            <ng-container *ngIf="editandoServicoId !== servico.id; else editServicoForm">
+               <strong>ID:</strong> {{servico.id}}<br>
+               <strong>Nome:</strong> {{servico.nome}}<br>
+               <strong>Descrição:</strong> {{servico.descricao}}<br>
+               <strong>Preço Base:</strong> {{servico.precoBase | currency:'BRL':'symbol':'1.2-2'}}<br>
+
+               <div class="servico-actions">
+                  <button (click)="editarServico(servico)" class="btn-editar">Editar</button>
+                  <button (click)="deletarServico(servico.id)" class="btn-deletar">Deletar</button>
+               </div>
+            </ng-container>
+
+            <ng-template #editServicoForm>
+               <form (ngSubmit)="salvarEdicaoServico()">
+                  <label><strong>Nome:</strong><br>
+                     <input [(ngModel)]="servicoEdit.nome" name="nomeServico" required class="input-full" />
+                  </label><br>
+
+                  <label><strong>Descrição:</strong><br>
+                     <textarea [(ngModel)]="servicoEdit.descricao" name="descricaoServico" required
+                        class="input-full textarea-field"></textarea>
+                  </label><br>
+
+                  <label><strong>Preço Base (R$):</strong><br>
+                     <input [(ngModel)]="servicoEdit.precoBase" name="precoBaseServico" required type="number"
+                        step="0.01" min="0" class="input-full" />
+                  </label><br>
+
+                  <div class="servico-actions">
+                     <button type="submit" class="btn-salvar">Salvar</button>
+                     <button type="button" (click)="cancelarEdicaoServico()" class="btn-cancelar">Cancelar</button>
+                  </div>
+               </form>
+            </ng-template>
+         </div>
+      </div>
    </div>
 </div>

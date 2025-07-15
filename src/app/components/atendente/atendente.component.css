@@ -17,7 +17,8 @@
 }
 
 /* Lista de cards */
-.clientes-list {
+.clientes-list,
+.servicos-list {
    display: flex;
    flex-wrap: wrap;
    gap: 24px;
@@ -25,7 +26,8 @@
 }
 
 /* Card individual */
-.cliente-card {
+.cliente-card,
+.servico-card {
    border: 1px solid #ccc;
    border-radius: 8px;
    padding: 20px;
@@ -40,7 +42,8 @@
 }
 
 /* Ações dos cards */
-.cliente-actions {
+.cliente-actions,
+.servico-actions {
    display: flex;
    gap: 10px;
    margin-top: 10px;
@@ -95,4 +98,106 @@
    border-radius: 4px;
    padding: 8px;
    margin-bottom: 8px;
+}
+
+/* Estilos para informações de endereço */
+.endereco-info {
+   background: #f5f5f5;
+   padding: 10px;
+   border-radius: 4px;
+   margin: 8px 0;
+   border-left: 4px solid #1976d2;
+}
+
+.endereco-info.sem-endereco {
+   background: #fff3cd;
+   border-left-color: #856404;
+   color: #856404;
+   font-style: italic;
+}
+
+.enderecos-adicionais {
+   margin-top: 10px;
+}
+
+.enderecos-adicionais details {
+   background: #f0f0f0;
+   border-radius: 4px;
+   padding: 8px;
+}
+
+.enderecos-adicionais summary {
+   cursor: pointer;
+   font-weight: bold;
+   color: #1976d2;
+   margin-bottom: 8px;
+}
+
+.enderecos-adicionais summary:hover {
+   color: #0d47a1;
+}
+
+.enderecos-adicionais .cliente-endereco-list {
+   margin-top: 8px;
+}
+
+.enderecos-adicionais .cliente-endereco-list li {
+   background: white;
+   margin: 8px 0;
+   padding: 8px;
+   border-radius: 4px;
+   border: 1px solid #e0e0e0;
+}
+
+/* Estilos para abas */
+.gerenciamento-container {
+   padding: 20px;
+}
+
+.abas-container {
+   display: flex;
+   margin-bottom: 20px;
+   border-bottom: 2px solid #e0e0e0;
+}
+
+.aba-btn {
+   background: none;
+   border: none;
+   padding: 12px 24px;
+   cursor: pointer;
+   font-size: 16px;
+   font-weight: 500;
+   color: #666;
+   border-bottom: 3px solid transparent;
+   transition: all 0.3s ease;
+}
+
+.aba-btn:hover {
+   color: #1976d2;
+   background-color: #f5f5f5;
+}
+
+.aba-btn.aba-ativa {
+   color: #1976d2;
+   border-bottom-color: #1976d2;
+   background-color: #f8f9fa;
+}
+
+/* Estilos para serviços */
+.servicos-title {
+   text-align: center;
+   margin-bottom: 24px;
+   color: #333;
+}
+
+.servicos-empty {
+   text-align: center;
+   color: #666;
+   font-style: italic;
+}
+
+.textarea-field {
+   min-height: 80px;
+   resize: vertical;
+   font-family: inherit;
 }

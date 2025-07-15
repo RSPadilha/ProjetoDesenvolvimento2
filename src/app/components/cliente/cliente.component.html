@@ -35,15 +35,16 @@
                <option value="">Selecione um endereço</option>
                @for (endereco of enderecos; track endereco.id) {
                <option [value]="endereco.id">
-                  {{ endereco.rua }}, {{ endereco.numero }}{{ endereco.complemento ? ' - ' + endereco.complemento : ''
-                  }}
-                  - {{ endereco.bairro }}, {{ endereco.cidade }}/{{ endereco.estado }}
+                  {{ endereco.rua }}, {{ endereco.numero }}
                </option>
                }
             </select>
 
             <div *ngIf="enderecos.length === 0" class="info-message">
-               <p>Nenhum endereço cadastrado. <a href="/minha-conta">Cadastre um endereço</a> para continuar.</p>
+               <p>Nenhum endereço cadastrado. <a href="/minhaconta">Cadastre um endereço</a> para continuar.</p>
+               <button type="button" class="btn-secondary" (click)="recarregarEnderecos()" [disabled]="loading">
+                  Recarregar Endereços
+               </button>
             </div>
          </div>
       </div>

@@ -59,7 +59,7 @@ export class MinhaContaComponent implements OnInit {
     try {
       // Buscar dados do usuário logado
       const { data: { user } } = await supabase.auth.getUser();
-
+      console.log(user);
       if (user) {
         this.usuario.email = user.email || '';
 
