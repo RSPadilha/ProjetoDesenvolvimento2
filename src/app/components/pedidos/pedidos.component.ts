@@ -15,7 +15,7 @@ export class PedidosComponent implements OnInit {
   usuarios: any[] = [];
   editandoId: number | null = null;
   pedidoEdit: any = {};
-  private apiUrl = 'http://localhost:5030/api';
+  private apiUrl = 'https://frameworks-dev-web-i-1.onrender.com/api';
 
   constructor(private http: HttpClient) { }
 

@@ -27,7 +27,7 @@ export class AtendenteComponent implements OnInit {
   // Controle de abas
   abaAtiva: 'clientes' | 'servicos' = 'clientes';
 
-  private apiUrl = 'http://localhost:5030/api';
+  private apiUrl = 'https://frameworks-dev-web-i-1.onrender.com/api';
 
   constructor(private http: HttpClient) { }
 

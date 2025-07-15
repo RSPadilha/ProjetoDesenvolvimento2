@@ -1,4 +1,4 @@
 export const environment = {
   production: false,
-  apiUrl: 'http://localhost:5030/api'
+  apiUrl: 'https://frameworks-dev-web-i-1.onrender.com/api'
 };

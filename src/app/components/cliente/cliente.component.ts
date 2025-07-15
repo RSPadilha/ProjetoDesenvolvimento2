@@ -55,7 +55,7 @@ export class ClienteComponent implements OnInit {
    enderecos: Endereco[] = [];
    loading = false;
    usuarioId: string | null = null;
-   private apiUrl = 'http://localhost:5030/api';
+   private apiUrl = 'https://frameworks-dev-web-i-1.onrender.com/api';
 
    // Formulário para novo pedido
    novoPedidoForm: NovoPedidoForm = {
