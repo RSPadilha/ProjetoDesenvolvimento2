@@ -218,9 +218,24 @@
                   *ngIf="precoBaseServicoNovo.invalid && (precoBaseServicoNovo.touched || precoBaseServicoNovo.dirty || novoServicoForm.submitted)"
                   class="erro-campo">Preço base é obrigatório.</div><br>
 
+               <!-- Campo de upload de imagem -->
+               <label><strong>Imagem do Serviço:</strong><br>
+                  <input type="file" (change)="onFileSelected($event)" accept="image/*" class="input-file" />
+               </label>
+               <div *ngIf="uploadingImage" class="upload-loading">Enviando imagem...</div>
+
+               <!-- Preview da imagem -->
+               <div *ngIf="hasImagePreview" class="image-preview-container">
+                  <img [src]="currentImageUrl" alt="Preview" class="image-preview" />
+                  <button type="button" (click)="removeImage()" class="btn-remove-image">×</button>
+               </div><br>
+
                <div class="servico-actions">
-                  <button type="submit" class="btn-salvar">Salvar</button>
-                  <button type="button" (click)="cancelarEdicaoServico()" class="btn-cancelar">Cancelar</button>
+                  <button type="submit" class="btn-salvar" [disabled]="uploadingImage">
+                     {{uploadingImage ? 'Salvando...' : 'Salvar'}}
+                  </button>
+                  <button type="button" (click)="cancelarEdicaoServico()" class="btn-cancelar"
+                     [disabled]="uploadingImage">Cancelar</button>
                </div>
             </form>
          </div>
@@ -228,6 +243,9 @@
          <!-- Lista de serviços -->
          <div *ngFor="let servico of servicos" class="servico-card">
             <ng-container *ngIf="editandoServicoId !== servico.id; else editServicoForm">
+               <div *ngIf="servico.image_url" class="servico-image-container">
+                  <img [src]="servico.image_url" [alt]="servico.nome" class="servico-image" />
+               </div>
                <strong>ID:</strong> {{servico.id}}<br>
                <strong>Nome:</strong> {{servico.nome}}<br>
                <strong>Descrição:</strong> {{servico.descricao}}<br>
@@ -255,9 +273,24 @@
                         step="0.01" min="0" class="input-full" />
                   </label><br>
 
+                  <!-- Campo de upload de imagem para edição -->
+                  <label><strong>Imagem do Serviço:</strong><br>
+                     <input type="file" (change)="onFileSelected($event)" accept="image/*" class="input-file" />
+                  </label>
+                  <div *ngIf="uploadingImage" class="upload-loading">Enviando imagem...</div>
+
+                  <!-- Preview da imagem -->
+                  <div *ngIf="hasImagePreview" class="image-preview-container">
+                     <img [src]="currentImageUrl" alt="Preview" class="image-preview" />
+                     <button type="button" (click)="removeImage()" class="btn-remove-image">×</button>
+                  </div><br>
+
                   <div class="servico-actions">
-                     <button type="submit" class="btn-salvar">Salvar</button>
-                     <button type="button" (click)="cancelarEdicaoServico()" class="btn-cancelar">Cancelar</button>
+                     <button type="submit" class="btn-salvar" [disabled]="uploadingImage">
+                        {{uploadingImage ? 'Salvando...' : 'Salvar'}}
+                     </button>
+                     <button type="button" (click)="cancelarEdicaoServico()" class="btn-cancelar"
+                        [disabled]="uploadingImage">Cancelar</button>
                   </div>
                </form>
             </ng-template>

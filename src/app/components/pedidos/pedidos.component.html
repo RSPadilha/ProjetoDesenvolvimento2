@@ -15,6 +15,7 @@
                <th>Endereço</th>
                <th>Status</th>
                <th>Data Criação</th>
+               <th>Chat</th>
             </tr>
          </thead>
          <tbody>
@@ -35,9 +36,56 @@
                   </select>
                </td>
                <td>{{ pedido.dataFormatada }}</td>
+               <td>
+                  <button class="chat-button-inline" (click)="toggleChatPedido(pedido.id)"
+                     [class.active]="pedidoChatAberto === pedido.id" title="Chat do pedido #{{ pedido.id }}">
+                     <svg viewBox="0 0 24 24" fill="currentColor">
+                        <path
+                           d="M20 2H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h4v3c0 .6.4 1 1 1 .2 0 .5-.1.7-.3L14.4 18H20c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 14H14l-2 2v-2H4V4h16v12z" />
+                        <circle cx="8" cy="10" r="1" />
+                        <circle cx="12" cy="10" r="1" />
+                        <circle cx="16" cy="10" r="1" />
+                     </svg>
+                  </button>
+               </td>
             </tr>
             }
          </tbody>
       </table>
+   </div>
+</div>
+
+<!-- Popup do Chat (agora específico para pedido) -->
+<div class="chat-popup-pedido" [class.open]="pedidoChatAberto !== null" *ngIf="pedidoChatAberto !== null">
+   <div class="chat-header">
+      <h3>Chat - Pedido #{{ pedidoChatAberto }}</h3>
+      <button class="chat-close" (click)="fecharChatPedido()">×</button>
+   </div>
+
+   <div class="chat-messages" #chatMessages>
+      <div *ngFor="let mensagem of mensagensChatPedido; trackBy: trackByMensagem" class="chat-message"
+         [class.user]="mensagem.tipo === 'user'" [class.support]="mensagem.tipo === 'support'">
+         <div class="message-content">
+            <p>{{ mensagem.texto }}</p>
+            <span class="message-time">{{ formatarHora(mensagem.timestamp) }}</span>
+         </div>
+      </div>
+
+      <div *ngIf="mensagensChatPedido.length === 0" class="chat-welcome">
+         <p>� Chat do Pedido #{{ pedidoChatAberto }}</p>
+         <p>Digite sua mensagem para iniciar uma conversa sobre este pedido específico.</p>
+      </div>
+   </div>
+
+   <div class="chat-input-container">
+      <input type="text" class="chat-input" placeholder="Digite sua mensagem sobre este pedido..."
+         [(ngModel)]="novaMensagemPedido" (keyup.enter)="enviarMensagemPedido()" [disabled]="enviandoMensagemPedido" />
+      <button class="chat-send" (click)="enviarMensagemPedido()"
+         [disabled]="!novaMensagemPedido.trim() || enviandoMensagemPedido">
+         <svg *ngIf="!enviandoMensagemPedido" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z" />
+         </svg>
+         <div *ngIf="enviandoMensagemPedido" class="sending-spinner"></div>
+      </button>
    </div>
 </div>

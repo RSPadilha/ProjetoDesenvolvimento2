@@ -2,14 +2,23 @@
    <img src="https://cnwokwuamsfiikryfdqr.supabase.co/storage/v1/object/public/bucketsenac25//senac.png" alt="Logo"
       class="header-logo" />
    <h1 class="header-title" routerLink="">ProjetoDesenvolvimento2</h1>
+
+   <!-- Navbar sempre visível -->
    <nav class="header-nav">
       <ul>
-         <li><a routerLink="/cliente">Solicite orçamento</a></li> <!-- Apenas para o cliente -->
-         <li><a routerLink="/atendente">Gerenciamento</a></li> <!-- Apenas para atendentes -->
-         <!-- <li><a routerLink="/relatorios">Relatórios</a></li> -->
-         <li><a routerLink="/pedidos">Pedidos</a></li>
-         <li><a routerLink="/minhaconta">Minha conta</a></li>
-         <li><a href="#" (click)="logout(); $event.preventDefault()">Logout</a></li>
+         <!-- Links apenas para usuários logados -->
+         <li *ngIf="isLoggedIn"><a routerLink="/cliente">Solicite orçamento</a></li>
+         <li *ngIf="isLoggedIn"><a routerLink="/atendente">Gerenciamento</a></li>
+         <li *ngIf="isLoggedIn"><a routerLink="/pedidos">Pedidos</a></li>
+         <li *ngIf="isLoggedIn"><a routerLink="/minhaconta">Minha conta</a></li>
+
+         <!-- Botões para usuários deslogados -->
+         <li *ngIf="!isLoggedIn"><a routerLink="/login" class="login-btn">Login</a></li>
+         <li *ngIf="!isLoggedIn"><a routerLink="/signup" class="signup-btn">Cadastrar</a></li>
+
+         <!-- Logout para usuários logados -->
+         <li *ngIf="isLoggedIn"><a href="#" (click)="logout(); $event.preventDefault()" class="logout-btn">Logout</a>
+         </li>
       </ul>
    </nav>
 </header>

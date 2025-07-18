@@ -1,0 +1,127 @@
+<div class="servico-detalhes-container">
+   <!-- Estado de loading -->
+   <div *ngIf="loading" class="loading-state">
+      <div class="loading-spinner"></div>
+      <p>Carregando detalhes do serviço...</p>
+   </div>
+
+   <!-- Estado de erro -->
+   <div *ngIf="error && !loading" class="error-state">
+      <div class="error-content">
+         <h2>Ops! Algo deu errado</h2>
+         <p class="error-message">{{ error }}</p>
+         <div class="error-actions">
+            <button class="btn-retry" (click)="carregarServico(servico?.id || 0)">
+               Tentar Novamente
+            </button>
+            <button class="btn-voltar" (click)="voltarParaHome()">
+               Voltar ao Início
+            </button>
+         </div>
+      </div>
+   </div>
+
+   <!-- Conteúdo principal -->
+   <div *ngIf="!loading && !error && servico" class="servico-content">
+      <!-- Cabeçalho com informações do serviço -->
+      <div class="servico-header">
+         <button class="btn-voltar-header" (click)="voltarParaHome()">
+            ← Voltar
+         </button>
+
+         <div class="servico-info">
+            <div class="servico-imagem" *ngIf="servico.image_url">
+               <img [src]="servico.image_url" [alt]="servico.nome" />
+            </div>
+
+            <div class="servico-dados">
+               <h1 class="servico-titulo">{{ servico.nome }}</h1>
+               <p class="servico-descricao">{{ servico.descricao }}</p>
+               <div class="servico-preco">
+                  <span class="preco-label">Preço base:</span>
+                  <span class="preco-valor">{{ servico.precoBase | currency:'BRL':'symbol':'1.2-2' }}</span>
+               </div>
+            </div>
+         </div>
+      </div>
+
+      <!-- Formulário de pedido -->
+      <div class="pedido-formulario">
+         <h2>Fazer Pedido</h2>
+         <p class="formulario-descricao">
+            Preencha os dados abaixo para solicitar este serviço. Você não precisa estar logado!
+         </p>
+
+         <form #pedidoForm="ngForm" (ngSubmit)="fazerPedido()">
+            <!-- Seção de Endereço -->
+            <div class="secao-endereco">
+               <h3>Endereço para o Serviço</h3>
+
+               <div class="form-row">
+                  <div class="form-group">
+                     <label for="rua">Rua *</label>
+                     <input type="text" id="rua" name="rua" [(ngModel)]="endereco.rua" required
+                        placeholder="Nome da rua" class="form-input" />
+                  </div>
+
+                  <div class="form-group form-group-small">
+                     <label for="numero">Número *</label>
+                     <input type="text" id="numero" name="numero" [(ngModel)]="endereco.numero" required
+                        placeholder="123" class="form-input" />
+                  </div>
+               </div>
+
+               <div class="form-row">
+                  <div class="form-group">
+                     <label for="bairro">Bairro *</label>
+                     <input type="text" id="bairro" name="bairro" [(ngModel)]="endereco.bairro" required
+                        placeholder="Nome do bairro" class="form-input" />
+                  </div>
+
+                  <div class="form-group">
+                     <label for="cidade">Cidade *</label>
+                     <input type="text" id="cidade" name="cidade" [(ngModel)]="endereco.cidade" required
+                        placeholder="Nome da cidade" class="form-input" />
+                  </div>
+               </div>
+
+               <div class="form-row">
+                  <div class="form-group">
+                     <label for="cep">CEP *</label>
+                     <input type="text" id="cep" name="cep" [(ngModel)]="endereco.cep" required placeholder="00000-000"
+                        maxlength="9" class="form-input" />
+                  </div>
+
+                  <div class="form-group">
+                     <label for="complemento">Complemento</label>
+                     <input type="text" id="complemento" name="complemento" [(ngModel)]="endereco.complemento"
+                        placeholder="Apartamento, casa, etc." class="form-input" />
+                  </div>
+               </div>
+            </div>
+
+            <!-- Seção de Observações -->
+            <div class="secao-observacao">
+               <h3>Observações</h3>
+               <div class="form-group">
+                  <label for="observacao">Observações adicionais</label>
+                  <textarea id="observacao" name="observacao" [(ngModel)]="observacao"
+                     placeholder="Descreva detalhes específicos sobre o serviço que você precisa..." rows="4"
+                     class="form-textarea"></textarea>
+               </div>
+            </div>
+
+            <!-- Botão de ação -->
+            <div class="form-actions">
+               <button type="submit" class="btn-fazer-pedido" [disabled]="!pedidoForm.form.valid || processandoPedido">
+                  <span *ngIf="!processandoPedido">Fazer Pedido</span>
+                  <span *ngIf="processandoPedido" class="loading-text">
+                     <span class="spinner"></span>
+                     Processando...
+                  </span>
+               </button>
+            </div>
+         </form>
+      </div>
+   </div>
+</div>

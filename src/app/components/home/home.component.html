@@ -1,4 +1,51 @@
-<div class="home-content">
-   <h1>Bem-vindo ao Sistema!</h1>
-   <p>Use o menu de navegação acima para acessar as diferentes seções do sistema.</p>
+<div class="ecommerce-container">
+   <div class="hero-section">
+      <h1>Ricardo Serviços</h1>
+      <p>Descubra os nossos serviços com a melhor qualidade</p>
+      <!-- Mensagem sutil para usuários deslogados -->
+      <p class="login-hint" *ngIf="!isLoggedIn">
+         <strong>Dica:</strong> Faça login para acessar carrinho de compras e histórico de pedidos!
+      </p>
+   </div>
+
+   <div class="products-section">
+      <h2>Nossos Serviços</h2>
+
+      <!-- Estado de loading -->
+      <div *ngIf="loading" class="loading-state">
+         <div class="loading-spinner"></div>
+         <p>Carregando serviços...</p>
+      </div>
+
+      <!-- Estado de erro -->
+      <div *ngIf="error && !loading" class="error-state">
+         <p class="error-message">{{ error }}</p>
+         <button class="btn-retry" (click)="loadServicos()">Tentar Novamente</button>
+      </div>
+
+      <!-- Lista de serviços -->
+      <div *ngIf="!loading && !error" class="products-grid">
+         <div class="product-card" *ngFor="let product of products; trackBy: trackByProductId">
+            <div class="product-image">
+               <img [src]="product.image" [alt]="product.name" />
+            </div>
+            <div class="product-info">
+               <h3>{{ product.name }}</h3>
+               <p class="product-description">{{ product.description }}</p>
+               <div class="product-price">
+                  <span class="price">{{ product.price | currency:'BRL':'symbol':'1.2-2' }}</span>
+               </div>
+               <button class="btn-saiba-mais" (click)="navigateToProduct(product.id)">
+                  Saiba Mais
+               </button>
+            </div>
+         </div>
+      </div>
+
+      <!-- Estado vazio -->
+      <div *ngIf="!loading && !error && products.length === 0" class="empty-state">
+         <p>Nenhum serviço disponível no momento.</p>
+         <button class="btn-retry" (click)="loadServicos()">Recarregar</button>
+      </div>
+   </div>
 </div>

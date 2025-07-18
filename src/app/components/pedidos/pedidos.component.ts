@@ -3,6 +3,13 @@ import { HttpClient } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
+interface MensagemChat {
+  id: string;
+  texto: string;
+  tipo: 'user' | 'support';
+  timestamp: Date;
+}
+
 @Component({
   selector: 'app-pedidos',
   standalone: true,
@@ -16,6 +23,18 @@ export class PedidosComponent implements OnInit {
   editandoId: number | null = null;
   pedidoEdit: any = {};
   private apiUrl = 'https://frameworks-dev-web-i-1.onrender.com/api';
+
+  // Propriedades do chat
+  chatAberto = false;
+  mensagensChat: MensagemChat[] = [];
+  novaMensagem = '';
+  enviandoMensagem = false;
+
+  // Propriedades do chat específico por pedido
+  pedidoChatAberto: number | null = null;
+  mensagensChatPedido: MensagemChat[] = [];
+  novaMensagemPedido = '';
+  enviandoMensagemPedido = false;
 
   constructor(private http: HttpClient) { }
 
@@ -172,5 +191,141 @@ export class PedidosComponent implements OnInit {
       case 'concluído': return 'status-concluido';
       default: return 'status-default';
     }
+  }
+
+  // Métodos do Chat específico por pedido
+  toggleChatPedido(pedidoId: number): void {
+    if (this.pedidoChatAberto === pedidoId) {
+      this.fecharChatPedido();
+    } else {
+      this.pedidoChatAberto = pedidoId;
+      this.mensagensChatPedido = [];
+
+      // Adicionar mensagem de boas-vindas específica do pedido
+      setTimeout(() => {
+        const pedido = this.pedidos.find(p => p.id === pedidoId);
+        const welcomeMsg = `Olá! Este é o chat do Pedido #${pedidoId}. ${pedido ? `Cliente: ${pedido.nomeCliente}, Serviço: ${pedido.nomeServico}.` : ''} Como posso ajudá-lo? 😊`;
+        this.adicionarMensagemSuportePedido(welcomeMsg);
+      }, 300);
+    }
+  }
+
+  fecharChatPedido(): void {
+    this.pedidoChatAberto = null;
+    this.mensagensChatPedido = [];
+    this.novaMensagemPedido = '';
+    this.enviandoMensagemPedido = false;
+  }
+
+  enviarMensagemPedido(): void {
+    if (!this.novaMensagemPedido.trim() || this.enviandoMensagemPedido || this.pedidoChatAberto === null) return;
+
+    const textoMensagem = this.novaMensagemPedido.trim();
+
+    // Adicionar mensagem do usuário
+    this.adicionarMensagemUsuarioPedido(textoMensagem);
+
+    // Limpar input
+    this.novaMensagemPedido = '';
+
+    // Simular resposta do suporte específica do pedido
+    this.simularRespostaSuportePedidoEspecifico(textoMensagem);
+  }
+
+  private adicionarMensagemUsuarioPedido(texto: string): void {
+    const mensagem: MensagemChat = {
+      id: this.gerarIdMensagem(),
+      texto: texto,
+      tipo: 'user',
+      timestamp: new Date()
+    };
+    this.mensagensChatPedido.push(mensagem);
+    this.scrollParaUltimaMensagemPedido();
+  }
+
+  private adicionarMensagemSuportePedido(texto: string): void {
+    const mensagem: MensagemChat = {
+      id: this.gerarIdMensagem(),
+      texto: texto,
+      tipo: 'support',
+      timestamp: new Date()
+    };
+    this.mensagensChatPedido.push(mensagem);
+    this.scrollParaUltimaMensagemPedido();
+  }
+
+  private simularRespostaSuportePedidoEspecifico(mensagemUsuario: string): void {
+    this.enviandoMensagemPedido = true;
+
+    setTimeout(() => {
+      let resposta = this.gerarRespostaAutomaticaPedidoEspecifico(mensagemUsuario);
+      this.adicionarMensagemSuportePedido(resposta);
+      this.enviandoMensagemPedido = false;
+    }, 1000 + Math.random() * 2000);
+  }
+
+  private gerarRespostaAutomaticaPedidoEspecifico(mensagem: string): string {
+    const mensagemLower = mensagem.toLowerCase();
+    const pedidoAtual = this.pedidos.find(p => p.id === this.pedidoChatAberto);
+
+    if (mensagemLower.includes('status')) {
+      return `O status atual deste pedido é: "${pedidoAtual?.status || 'N/A'}". Você pode alterá-lo diretamente na tabela se necessário.`;
+    }
+
+    if (mensagemLower.includes('cliente')) {
+      return `Este pedido pertence ao cliente: ${pedidoAtual?.nomeCliente || 'N/A'}. ID do cliente: ${pedidoAtual?.idCliente || 'N/A'}.`;
+    }
+
+    if (mensagemLower.includes('serviço') || mensagemLower.includes('servico')) {
+      return `O serviço solicitado é: ${pedidoAtual?.nomeServico || 'N/A'}. Descrição: "${pedidoAtual?.descricao || 'N/A'}"`;
+    }
+
+    if (mensagemLower.includes('endereço') || mensagemLower.includes('endereco') || mensagemLower.includes('local')) {
+      return `Endereço do serviço: ${pedidoAtual?.enderecoCompleto || 'N/A'}`;
+    }
+
+    if (mensagemLower.includes('data') || mensagemLower.includes('quando')) {
+      return `Este pedido foi criado em: ${pedidoAtual?.dataFormatada || 'N/A'}`;
+    }
+
+    if (mensagemLower.includes('alterar') || mensagemLower.includes('mudar') || mensagemLower.includes('editar')) {
+      return `Para alterar informações deste pedido, você pode modificar o status diretamente na tabela. Para outras alterações, entre em contato com o cliente ou o sistema administrativo.`;
+    }
+
+    if (mensagemLower.includes('olá') || mensagemLower.includes('oi')) {
+      return `Olá! Estou aqui para ajudar com questões específicas sobre o Pedido #${this.pedidoChatAberto}. O que gostaria de saber?`;
+    }
+
+    if (mensagemLower.includes('obrigado') || mensagemLower.includes('valeu')) {
+      return `De nada! Se precisar de mais informações sobre este pedido ou outros, estarei aqui para ajudar! 😊`;
+    }
+
+    // Resposta padrão específica do pedido
+    return `Informações sobre o Pedido #${this.pedidoChatAberto}: Cliente ${pedidoAtual?.nomeCliente || 'N/A'}, Status: ${pedidoAtual?.status || 'N/A'}. Como posso ajudar especificamente com este pedido?`;
+  }
+
+  private scrollParaUltimaMensagemPedido(): void {
+    setTimeout(() => {
+      const chatMessages = document.querySelector('.chat-messages');
+      if (chatMessages) {
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+      }
+    }, 100);
+  }
+
+  // Métodos auxiliares do chat
+  private gerarIdMensagem(): string {
+    return Date.now().toString() + Math.random().toString(36).substr(2, 9);
+  }
+
+  trackByMensagem(index: number, mensagem: MensagemChat): string {
+    return mensagem.id;
+  }
+
+  formatarHora(timestamp: Date): string {
+    return timestamp.toLocaleTimeString('pt-BR', {
+      hour: '2-digit',
+      minute: '2-digit'
+    });
   }
 }

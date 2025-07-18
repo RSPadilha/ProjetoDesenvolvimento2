@@ -13,8 +13,8 @@
    </div>
 
    <div *ngIf="usuarioId && !loading" class="cliente-form-content">
-      <div class="cliente-form-row">
-         <div class="cliente-form-col">
+      <div class="cliente-form-column">
+         <div class="cliente-form-field">
             <label for="tipo-servico">Tipo de Serviço *</label>
             <select id="tipo-servico" [(ngModel)]="novoPedidoForm.idServico" [disabled]="loading">
                <option value="">Selecione um serviço</option>
@@ -22,14 +22,9 @@
                <option [value]="servico.id">{{ servico.nome }}</option>
                }
             </select>
-
-            <label for="descricao">Descrição *</label>
-            <textarea id="descricao" [(ngModel)]="novoPedidoForm.descricao"
-               placeholder="Descreva detalhadamente o serviço desejado..." [disabled]="loading" rows="3">
-            </textarea>
          </div>
 
-         <div class="cliente-form-col">
+         <div class="cliente-form-field">
             <label for="endereco">Endereço *</label>
             <select id="endereco" [(ngModel)]="novoPedidoForm.idEndereco" [disabled]="loading">
                <option value="">Selecione um endereço</option>
@@ -41,11 +36,18 @@
             </select>
 
             <div *ngIf="enderecos.length === 0" class="info-message">
-               <p>Nenhum endereço cadastrado. <a href="/minhaconta">Cadastre um endereço</a> para continuar.</p>
+               <p>Nenhum endereço cadastrado. <a routerLink="/minhaconta">Cadastre um endereço</a> para continuar.</p>
                <button type="button" class="btn-secondary" (click)="recarregarEnderecos()" [disabled]="loading">
                   Recarregar Endereços
                </button>
             </div>
+         </div>
+
+         <div class="cliente-form-field">
+            <label for="descricao">Descrição *</label>
+            <textarea id="descricao" [(ngModel)]="novoPedidoForm.descricao"
+               placeholder="Descreva detalhadamente o serviço desejado..." [disabled]="loading" rows="3">
+            </textarea>
          </div>
       </div>
 
@@ -95,5 +97,50 @@
             }
          </tbody>
       </table>
+   </div>
+</div>
+
+<!-- Botão de Chat Flutuante -->
+<div class="chat-button" (click)="toggleChat()" [class.active]="chatAberto">
+   <svg viewBox="0 0 24 24" fill="currentColor">
+      <path
+         d="M20 2H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h4v3c0 .6.4 1 1 1 .2 0 .5-.1.7-.3L14.4 18H20c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 14H14l-2 2v-2H4V4h16v12z" />
+      <circle cx="8" cy="10" r="1" />
+      <circle cx="12" cy="10" r="1" />
+      <circle cx="16" cy="10" r="1" />
+   </svg>
+</div>
+
+<!-- Popup do Chat -->
+<div class="chat-popup" [class.open]="chatAberto">
+   <div class="chat-header">
+      <h3>Suporte ao Cliente</h3>
+      <button class="chat-close" (click)="toggleChat()">×</button>
+   </div>
+
+   <div class="chat-messages" #chatMessages>
+      <div *ngFor="let mensagem of mensagensChat; trackBy: trackByMensagem" class="chat-message"
+         [class.user]="mensagem.tipo === 'user'" [class.support]="mensagem.tipo === 'support'">
+         <div class="message-content">
+            <p>{{ mensagem.texto }}</p>
+            <span class="message-time">{{ formatarHora(mensagem.timestamp) }}</span>
+         </div>
+      </div>
+
+      <div *ngIf="mensagensChat.length === 0" class="chat-welcome">
+         <p>👋 Olá! Como posso ajudá-lo hoje?</p>
+         <p>Digite sua mensagem abaixo para iniciar uma conversa.</p>
+      </div>
+   </div>
+
+   <div class="chat-input-container">
+      <input type="text" class="chat-input" placeholder="Digite sua mensagem..." [(ngModel)]="novaMensagem"
+         (keyup.enter)="enviarMensagem()" [disabled]="enviandoMensagem" />
+      <button class="chat-send" (click)="enviarMensagem()" [disabled]="!novaMensagem.trim() || enviandoMensagem">
+         <svg *ngIf="!enviandoMensagem" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z" />
+         </svg>
+         <div *ngIf="enviandoMensagem" class="sending-spinner"></div>
+      </button>
    </div>
 </div>
